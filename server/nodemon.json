@@ -1,0 +1,8 @@
+{
+  "watch": [
+    "server",
+    "shared"
+  ],
+  "ext": "ts,js,json",
+  "exec": "bun run index.ts"
+}
