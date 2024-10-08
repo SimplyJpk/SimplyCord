@@ -4,7 +4,7 @@ import cors from 'cors';
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import sequelize from './config/database';
+import sequelizeInstance from '@config/database';
 
 // Models
 import User from '@models/user';
@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-sequelize.sync().then(() => {
+sequelizeInstance.sync().then(() => {
   console.log('Database synced');
 }).catch(err => {
   console.error('Error syncing database:', err);
