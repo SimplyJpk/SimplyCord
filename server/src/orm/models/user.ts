@@ -1,29 +1,15 @@
+import {
+  DataTypes,
+  Model,
+  InferCreationAttributes,
+  CreationOptional,
+} from '@sequelize/core';
+import sequelizeInstance from '../../config/database';
 
+import { UserAttributes } from '@shared/models/user';
 
-import { DataTypes, Model, type Optional } from 'sequelize';
-import sequelize from '../config/database';
-
-// Define the attributes for the User model
-interface UserAttributes {
-  id: number;
-  username: string;
-  email: string;
-  password: string;
-  salt: string;
-  nonce: string;
-  passwordChanged: Date;
-  reset: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date;
-}
-
-// Define the creation attributes for the User model
-interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'passwordChanged' | 'reset'> {}
-
-// Define the User model class
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  public id!: number;
+class User extends Model implements UserAttributes {
+  public id!: CreationOptional<number>;
   public username!: string;
   public email!: string;
   public password!: string;
@@ -32,18 +18,15 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public passwordChanged!: Date;
   public reset!: number;
 
-  // Timestamps
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date;
 
-  // Define the associations for the User model
   public static associate(models: any) {
     User.hasMany(models.Message, { foreignKey: 'userId' });
   }
 }
 
-// Initialize the User model
 User.init(
   {
     id: {
@@ -84,10 +67,10 @@ User.init(
     },
   },
   {
-    sequelize,
+    sequelize: sequelizeInstance,
     tableName: 'users',
     modelName: 'User',
-    paranoid: true, // Enable paranoid mode to include deletedAt timestamp
+    paranoid: true,
   }
 );
 

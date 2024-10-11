@@ -1,14 +1,17 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import fs from 'fs';
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import sequelizeInstance from '@config/database';
+import sequelizeInstance from './config/database';
 
 // Models
-import User from '@models/user';
-import Message from '@models/message';
+import models from './orm/models';
+const { User, Message, Server } = models;
+
+const apiPrefix = '/api/v1';
 
 dotenv.config();
 
@@ -16,17 +19,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-sequelizeInstance.sync().then(() => {
-  console.log('Database synced');
-}).catch(err => {
-  console.error('Error syncing database:', err);
-});
-
-app.get('/', (req, res) => {
+app.get(`${apiPrefix}/`, (req, res) => {
   res.send('Hello World!');
 });
 
-app.post('/register', async (req, res) => {
+app.post(`${apiPrefix}/register`, async (req, res) => {
   const { username, email, password } = req.body;
 
   const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10);
@@ -52,7 +49,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.post('/login', async (req, res) => {
+app.post(`${apiPrefix}/login`, async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -74,7 +71,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.get('/messages', async (req, res) => {
+app.get(`${apiPrefix}/messages`, async (req, res) => {
   try {
     // just get all messages in database
     const messages = await Message.findAll();
@@ -84,7 +81,17 @@ app.get('/messages', async (req, res) => {
   }
 });
 
-app.post('/messages', async (req, res) => {
+app.get(`${apiPrefix}/messages/:serverId`, async (req, res) => {
+  try {
+    const { serverId } = req.params;
+    const messages = await Message.findAll({ where: { serverId } });
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+app.post(`${apiPrefix}/messages`, async (req, res) => {
   try {
     let { message, userId } = req.body;
     if (userId === undefined) {
@@ -92,15 +99,54 @@ app.post('/messages', async (req, res) => {
     }
     const user = await User.findOne({ where: { id: userId } });
     if (user) {
+      // sanitize
+      message = message.replace(/<.*?>/g, '');
+
+      // TODO: (James) Add server selection
       const messageObj = await Message.create({
         message,
         userId,
+        serverId: 1, // TODO: (James) Add server selection
         createdAt: new Date()
       });
       res.json(messageObj);
     } else {
       res.status(401).json({ error: 'Invalid user' });
     }
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+app.post(`${apiPrefix}/messages/:serverId`, async (req, res) => {
+  try {
+    let { message } = req.body;
+    const user = await User.findOne({ where: { id: 1 } });
+    if (user) {
+      // sanitize
+      message = message.replace(/<.*?>/g, '');
+
+      const serverIdInt = parseInt(req.params.serverId, 10);
+
+      const messageObj = await Message.create({
+        message,
+        userId: user.id,
+        serverId: serverIdInt,
+        createdAt: new Date()
+      });
+      res.json(messageObj);
+    } else {
+      res.status(401).json({ error: 'Invalid user' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+app.get(`${apiPrefix}/servers`, async (req, res) => {
+  try {
+    const servers = await Server.findAll();
+    res.json(servers);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
