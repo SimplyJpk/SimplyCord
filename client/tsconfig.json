@@ -1,14 +1,16 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
+  "references": [],
   "compilerOptions": {
+    "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@shared/*": ["../shared/*"]
-    }
-  }
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@shared/*": [
+        "../server/src/shared/*"
+      ]
+    },
+    "jsx": "react-jsx"
+  },
 }

@@ -15,7 +15,7 @@ export default defineConfig({
       '@components': path.resolve(__dirname, 'client/src/components'),
       '@slices': path.resolve(__dirname, 'client/src/slices'),
       '@store': path.resolve(__dirname, 'client/src/store'),
-      '@shared': path.resolve(__dirname, 'shared'),
+      '@shared': path.resolve(__dirname, 'server/src/shared'),
     },
   },
 })
