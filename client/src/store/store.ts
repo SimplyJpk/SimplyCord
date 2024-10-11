@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import messagesReducer from '../../src/slices/messageSlice.ts';
+import messagesReducer from '../../src/slices/messageSlice';
+import serversReducer from '../../src/slices/serverSlice';
 
 const store = configureStore({
   reducer: {
     messages: messagesReducer,
+    servers: serversReducer,
   },
 });
 

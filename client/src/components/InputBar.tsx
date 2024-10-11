@@ -1,18 +1,18 @@
 import React from 'react';
 
 import { useState } from 'react'
-import { useRef } from 'react'
 import { useEffect } from 'react'
 
 interface InputBarProps {
   onSubmit: (message: string) => void;
+  inputRef: React.RefObject<HTMLInputElement>;
 }
 
 const InputBar: React.FC<InputBarProps> = ({
   onSubmit,
+  inputRef,
 }) => {
   const [input, setInput] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (inputRef.current) {
@@ -35,8 +35,14 @@ const InputBar: React.FC<InputBarProps> = ({
   }
 
   return (
-    <div className="bg-gray-500 text-white p-2 rounded-lg">
+    <div className="bg-gray-5 text-white p-2 rounded-lg">
       <form onSubmit={handleSubmit} className="flex flex-row gap-2 w-full">
+        <div className="flex-grow flex justify-center items-center">
+          <img src="/src/assets/icons/ui/iconmonstr-plus-circle-lined-240.png"
+            alt="plus-circle-lined"
+            className="w-10 h-10 rounded-full bg-gray-5 align-middle cursor-pointer hover:bg-gray-6"
+          />
+        </div>
         <input
           ref={inputRef}
           type="text"
@@ -44,6 +50,7 @@ const InputBar: React.FC<InputBarProps> = ({
           value={input}
           onChange={handleInputChange}
           className="rounded-lg text-white bg-gray-800 p-2 w-full"
+          placeholder="Type your message here..."
         />
         <button
           type="submit"
