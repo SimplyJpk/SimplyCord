@@ -8,11 +8,13 @@ import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png'
 interface InputBarProps {
   onSubmit: (message: string) => void;
   inputRef: React.RefObject<HTMLInputElement>;
+  disabled: boolean;
 }
 
 const InputBar: React.FC<InputBarProps> = ({
   onSubmit,
   inputRef,
+  disabled,
 }) => {
   const [input, setInput] = useState('')
 
@@ -53,10 +55,13 @@ const InputBar: React.FC<InputBarProps> = ({
           onChange={handleInputChange}
           className="rounded-lg text-white bg-gray-800 p-2 w-full"
           placeholder="Type your message here..."
+          disabled={disabled}
         />
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+          disabled={disabled}
+        >
           Send
         </button>
       </form>

@@ -77,6 +77,7 @@ function App() {
         <InputBar
           onSubmit={sendMessageHandler}
           inputRef={inputMessageRef}
+          disabled={!currentServer}
         />
       </div>
     </div>
