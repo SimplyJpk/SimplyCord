@@ -3,6 +3,7 @@ import { RootState } from './store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from './store/store.ts';
 import { fetchServerMessages, sendMessageToServer } from './slices/messageSlice';
+import { fetchUser } from './slices/userSlice';
 import { fetchServers } from './slices/serverSlice';
 import './App.css'
 
@@ -19,6 +20,7 @@ function App() {
   const messages = useSelector((state: RootState) => state.messages.messages);
   const messageStatus = useSelector((state: RootState) => state.messages.status);
   const servers = useSelector((state: RootState) => state.servers.servers);
+  const user = useSelector((state: RootState) => state.user.user);
   const auth = useSelector((state: RootState) => state.auth);
 
   // Refs
@@ -28,6 +30,8 @@ function App() {
   useEffect(() => {
     dispatch(fetchServers());
   }, [dispatch]);
+
+  useEffect(() => { dispatch(fetchUser()); }, [dispatch]);
 
   useEffect(() => {
     if (currentServer) {

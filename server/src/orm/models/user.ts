@@ -8,6 +8,20 @@ import sequelizeInstance from '../../config/database';
 
 import { UserAttributes } from '@shared/models/user';
 
+export interface ServerUserAttributes extends UserAttributes {
+  // id: number;
+  // username: string;
+  email: string;
+  password: string;
+  salt: string;
+  nonce: string;
+  passwordChanged: Date;
+  reset: number;
+  // createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
+
 class User extends Model implements UserAttributes {
   public id!: CreationOptional<number>;
   public username!: string;
