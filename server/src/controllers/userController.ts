@@ -39,7 +39,13 @@ export async function registerUser(req: Request, res: Response) {
       passwordChanged: new Date(),
       reset: 0
     });
-    res.status(201).json(user);
+
+    if (user) {
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'default_secret');
+      res.json({ token, userId: user.id, username: user.username });
+    } else {
+      res.status(500).json({ error: 'Failed to create user' });
+    }
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -59,7 +65,7 @@ export async function loginUser(req: Request, res: Response) {
       const isPasswordValid = await bcrypt.compare(password + user.salt, user.password);
       if (isPasswordValid) {
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'default_secret');
-        res.json({ token });
+        res.json({ token, userId: user.id, username: user.username });
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
       }
