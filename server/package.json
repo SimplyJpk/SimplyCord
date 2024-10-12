@@ -30,7 +30,7 @@
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc && cp .env.dev .env",
+    "build": "rm -rf dist && tsc",
     "build:prod": "rm -rf dist && tsc && cp .env.prod .env",
     "start": "node -r ts-node/register src/index.ts",
     "start:watch": "nodemon --watch 'src/**/*.ts' -e ts --exec node -r ts-node/register src/index.ts",
