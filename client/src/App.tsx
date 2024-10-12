@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { RootState } from './store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from './store/store.ts';
-import { fetchMessages, fetchServerMessages, sendMessage, sendMessageToServer } from './slices/messageSlice';
+import { fetchServerMessages, sendMessageToServer } from './slices/messageSlice';
 import { fetchServers } from './slices/serverSlice';
 import './App.css'
 
@@ -25,13 +25,6 @@ function App() {
   const inputMessageRef = useRef<HTMLInputElement>(null);
   // State
   const [currentServer, setCurrentServer] = useState<ServerAttributes | null>(null);
-  // Effects
-  useEffect(() => {
-    if (messageStatus === 'idle') {
-      dispatch(fetchMessages());
-    }
-  }, [messageStatus, dispatch]);
-
   useEffect(() => {
     dispatch(fetchServers());
   }, [dispatch]);
@@ -49,8 +42,6 @@ function App() {
   const sendMessageHandler = (message: string) => {
     if (currentServer) {
       dispatch(sendMessageToServer({ message, serverId: currentServer.id, userId: auth.userId }));
-    } else {
-      dispatch(sendMessage(message));
     }
   };
 

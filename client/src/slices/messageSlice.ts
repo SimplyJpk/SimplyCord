@@ -15,21 +15,10 @@ const initialState: MessagesState = {
   error: null,
 };
 
-export const fetchMessages = createAsyncThunk('messages/fetchMessages', async () => {
-  const response = await axiosInstance.get('/messages');
-  return response.data;
-});
-
 export const fetchServerMessages = createAsyncThunk('messages/fetchServerMessages', async (serverId: number) => {
   const response = await axiosInstance.get(`/messages/${serverId}`);
   return response.data;
 });
-
-export const sendMessage = createAsyncThunk('messages/sendMessage', async (message: string) => {
-  const response = await axiosInstance.post('/messages', { message });
-  return response.data;
-});
-
 
 // TODO: (James) Bulky?
 interface SendMessagePayload {
@@ -54,28 +43,6 @@ const messagesSlice = createSlice({
     // TODO: (James) What is correct way of doing this, surely not 5000 lines of the same stuff
     // TODO: (James) Reduce boiler plate, maybe a generator/template?
     builder
-      .addCase(fetchMessages.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchMessages.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.messages = action.payload;
-      })
-      .addCase(fetchMessages.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || 'Failed to fetch messages';
-      })
-      .addCase(sendMessage.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(sendMessage.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.messages.push(action.payload);
-      })
-      .addCase(sendMessage.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || 'Failed to send message';
-      })
       .addCase(fetchServerMessages.pending, (state) => {
         state.status = 'loading';
       })
