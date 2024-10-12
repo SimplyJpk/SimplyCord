@@ -1,11 +1,14 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://127.0.0.1:3000/api/v1';
+// TODO: (James) Move to .env
+const apiBaseUrl = 'http://server.simplytf.com:3000/api/v1';
+
+axios.defaults.baseURL = apiBaseUrl;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://127.0.0.1:3000';
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = apiBaseUrl;
 
 const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:3000/api/v1',
+  baseURL: apiBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
