@@ -9,15 +9,24 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
+      "@orm/*": [
+        "orm/*"
+      ],
       "@models/*": [
-        "models/*"
+        "orm/models/*"
       ],
       "@shared/*": [
         "shared/*"
       ],
       "@config/*": [
         "config/*"
-      ]
+      ],
+      "@controllers/*": [
+        "controllers/*"
+      ],
+      "@routes/*": [
+        "routes/*"
+      ],
     },
     "baseUrl": "./src"
   },

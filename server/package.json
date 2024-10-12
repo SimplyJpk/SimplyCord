@@ -32,8 +32,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "build:prod": "rm -rf dist && tsc && cp .env.prod .env",
-    "start": "node -r ts-node/register src/index.ts",
-    "start:watch": "nodemon --watch 'src/**/*.ts' -e ts --exec node -r ts-node/register src/index.ts",
+    "start": "node -r ts-node/register/transpile-only src/index.ts",
+    "start:watch": "nodemon",
     "docker:build": "docker build -t simplycord-server .",
     "docker:run": "docker run -p 3000:3000 simplycord-server",
     "docker:stop": "docker stop simplycord-server",

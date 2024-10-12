@@ -12,9 +12,13 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      // Client
       '@components': path.resolve(__dirname, 'client/src/components'),
       '@slices': path.resolve(__dirname, 'client/src/slices'),
       '@store': path.resolve(__dirname, 'client/src/store'),
+      '@hooks': path.resolve(__dirname, 'client/src/hooks'),
+      '@pages': path.resolve(__dirname, 'client/src/pages'),
+      // Shared | Server
       '@shared': path.resolve(__dirname, 'server/src/shared'),
     },
   },

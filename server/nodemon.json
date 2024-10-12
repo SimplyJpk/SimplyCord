@@ -1,8 +1,7 @@
 {
   "watch": [
-    "server",
-    "shared"
+    "src"
   ],
   "ext": "ts,js,json",
-  "exec": "bun run index.ts"
+  "exec": "npm run build && node -r ts-node/register -r tsconfig-paths/register src/index.ts"
 }

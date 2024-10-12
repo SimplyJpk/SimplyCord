@@ -3,6 +3,8 @@ import React from 'react';
 import { useState } from 'react'
 import { useEffect } from 'react'
 
+import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png'
+
 interface InputBarProps {
   onSubmit: (message: string) => void;
   inputRef: React.RefObject<HTMLInputElement>;
@@ -38,7 +40,7 @@ const InputBar: React.FC<InputBarProps> = ({
     <div className="bg-gray-5 text-white p-2 rounded-lg">
       <form onSubmit={handleSubmit} className="flex flex-row gap-2 w-full">
         <div className="flex-grow flex justify-center items-center">
-          <img src="/src/assets/icons/ui/iconmonstr-plus-circle-lined-240.png"
+          <img src={PlusCircle}
             alt="plus-circle-lined"
             className="w-10 h-10 rounded-full bg-gray-5 align-middle cursor-pointer hover:bg-gray-6"
           />

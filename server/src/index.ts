@@ -7,9 +7,15 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import sequelizeInstance from './config/database';
 
+// Routes
+import userRoutes from '@routes/userRoutes';
+
+// Controllers
+// TODO: (James) Prob don't need to import these
+
 // Models
 import models from './orm/models';
-const { User, Message, Server } = models;
+const { User, Message, Server, ServerChannel } = models;
 
 const apiPrefix = '/api/v1';
 
@@ -23,53 +29,8 @@ app.get(`${apiPrefix}/`, (req, res) => {
   res.send('Hello World!');
 });
 
-app.post(`${apiPrefix}/register`, async (req, res) => {
-  const { username, email, password } = req.body;
+app.use(`${apiPrefix}/user`, userRoutes);
 
-  const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10);
-
-  const salt = await bcrypt.genSalt(saltRounds);
-  const hashedPassword = await bcrypt.hash(password + salt, saltRounds);
-  const nonce = Math.floor(Math.random() * 1000000).toString();
-  const hashedNonce = await bcrypt.hash(nonce, saltRounds);
-
-  try {
-    const user = await User.create({
-      username,
-      email,
-      password: hashedPassword,
-      salt,
-      nonce: hashedNonce,
-      passwordChanged: new Date(),
-      reset: 0
-    });
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
-  }
-});
-
-app.post(`${apiPrefix}/login`, async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ where: { email } });
-
-    if (user) {
-      const hashedPassword = await bcrypt.hash(password + user.salt, parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10));
-      if (await bcrypt.compare(hashedPassword, user.password)) {
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'default_secret');
-        res.json({ token });
-      } else {
-        res.status(401).json({ error: 'Invalid credentials' });
-      }
-    } else {
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
-  }
-});
 
 app.get(`${apiPrefix}/messages`, async (req, res) => {
   try {
@@ -147,6 +108,40 @@ app.get(`${apiPrefix}/servers`, async (req, res) => {
   try {
     const servers = await Server.findAll();
     res.json(servers);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+app.get(`${apiPrefix}/servers/:serverId/channels`, async (req, res) => {
+  try {
+    const { serverId } = req.params;
+    const channels = await ServerChannel.findAll({ where: { serverId } });
+    res.json(channels);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+app.post(`${apiPrefix}/servers/:serverId/channels`, async (req, res) => {
+  try {
+    const { serverId } = req.params;
+    const { channelId, name, description, icon } = req.body;
+
+    const server = await Server.findOne({ where: { id: serverId } });
+    if (server) {
+      const channel = await ServerChannel.create({
+        serverId,
+        channelId,
+        name,
+        description,
+        icon,
+        createdAt: new Date()
+      });
+      res.json(channel);
+    } else {
+      res.status(401).json({ error: 'Invalid server' });
+    }
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }

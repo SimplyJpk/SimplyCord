@@ -1,11 +1,14 @@
-import User from './models/user';
+// Models
 import Message from './models/message';
 import Server from './models/server';
+import ServerChannel from './models/serverChannel';
+import User from './models/user';
 
 const models = {
-  User,
   Message,
   Server,
+  ServerChannel,
+  User,
 };
 
 Object.values(models).forEach((model) => {
@@ -15,3 +18,5 @@ Object.values(models).forEach((model) => {
 });
 
 export default models;
+
+export { User, Message, Server, ServerChannel };
