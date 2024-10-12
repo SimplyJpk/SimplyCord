@@ -1,4 +1,4 @@
-export function getTime(date: Date): string {
+export function getTime(date: Date | string): string {
   date = getLocalDateFromUTC(date);
 
   const hours = date.getHours();
@@ -6,7 +6,7 @@ export function getTime(date: Date): string {
   return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
 }
 
-export function getDate(date: Date): string {
+export function getDate(date: Date | string): string {
   date = getLocalDateFromUTC(date);
 
   const month = date.getMonth() + 1;
@@ -15,7 +15,7 @@ export function getDate(date: Date): string {
   return `${month < 10 ? '0' : ''}${month}/${day < 10 ? '0' : ''}${day}/${year}`;
 }
 
-export function getTimeSince(date: Date): string {
+export function getTimeSince(date: Date | string): string {
   date = getLocalDateFromUTC(date);
 
   const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
@@ -32,24 +32,32 @@ export function getTimeSince(date: Date): string {
   }
 }
 
-export function getMessageDate(date: Date): string {
+export function getMessageDate(date: Date | string): string {
   date = getLocalDateFromUTC(date);
 
-  const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+  const now = new Date();
+  const localNow = getLocalDateFromUTC(now);
 
-  if (localDate.getDate() === date.getDate()) {
-    return `Today at ${getTime(localDate)}`;
-  } else if (localDate.getDate() + 1 === date.getDate()) {
-    return `Yesterday at ${getTime(localDate)}`;
+  if (localNow.getDate() === date.getDate() &&
+    localNow.getMonth() === date.getMonth() &&
+    localNow.getFullYear() === date.getFullYear()) {
+    return `Today at ${getTime(date)}`;
+  } else if (localNow.getDate() - 1 === date.getDate() &&
+    localNow.getMonth() === date.getMonth() &&
+    localNow.getFullYear() === date.getFullYear()) {
+    return `Yesterday at ${getTime(date)}`;
   } else {
-    return getDate(localDate);
+    return getDate(date);
   }
 }
 
-export function getLocalDateFromUTC(date: Date): Date {
-  date = new Date(date);
-
+export function getLocalDateFromUTC(date: Date | string): Date {
+  // Ensure the date is a Date object
+  if (typeof date === 'string') {
+    date = new Date(date);
+  }
   // Convert to local time
-  const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+  const localDate = new Date(date.getTime() + date.getTimezoneOffset());
+
   return localDate;
 }

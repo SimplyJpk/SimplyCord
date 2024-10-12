@@ -71,12 +71,12 @@ async function initializeDatabase() {
 
       const servers = [server1, server2, server3];
       for (const server of servers) {
-        for (let i = 0; i < randomInt(3, 7); i++) {
+        for (let i = 0; i < randomInt(2, 7); i++) {
           await models.Message.create({
             message: `Message ${i + 1}`,
             userId: user.id,
             serverId: server.id,
-            createdAt: new Date(),
+            createdAt: new Date().toISOString(),
           });
         }
       }
