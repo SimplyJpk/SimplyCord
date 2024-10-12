@@ -8,8 +8,8 @@ import './App.css'
 
 // App component
 import InputBar from './components/InputBar';
-import Message from './components/Message';
 import ServerList from './components/ServerList';
+import MessageList from './components/chat/MessageList';
 
 import { ServerAttributes } from '@shared/models/server';
 
@@ -70,9 +70,11 @@ function App() {
                 </p>
               </div>
             )}
-            {currentServer && messages.map((message: Message, index) => (
-              <Message key={index} message={message} />
-            ))}
+            {currentServer && (
+              <MessageList
+                messages={messages}
+              />
+            )}
           </div>
         </div>
         <InputBar
