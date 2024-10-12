@@ -1,2 +1,3 @@
 Icons Used:
 - iconmonstr-plus-circle-lined-240.png            | https://iconmonstr.com/plus-circle-lined-png/
+- iconmonstr-gear-6-240.png                       | https://iconmonstr.com/gear-6-png/
