@@ -70,6 +70,7 @@ function App() {
             {currentServer && (
               <MessageList
                 messages={messages}
+                isLoading={messageStatus === 'loading'}
               />
             )}
           </div>
