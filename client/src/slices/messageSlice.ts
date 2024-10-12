@@ -35,12 +35,13 @@ export const sendMessage = createAsyncThunk('messages/sendMessage', async (messa
 interface SendMessagePayload {
   message: string;
   serverId: number;
+  userId: number;
 }
 
 export const sendMessageToServer = createAsyncThunk(
   'messages/sendMessageToServer',
-  async ({ message, serverId }: SendMessagePayload) => {
-    const response = await axiosInstance.post(`/messages/${serverId}`, { message });
+  async ({ message, serverId, userId }: SendMessagePayload) => {
+    const response = await axiosInstance.post(`/messages/${serverId}`, { message, userId });
     return response.data;
   }
 );
