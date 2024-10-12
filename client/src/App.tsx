@@ -18,6 +18,7 @@ function App() {
   const messages = useSelector((state: RootState) => state.messages.messages);
   const messageStatus = useSelector((state: RootState) => state.messages.status);
   const servers = useSelector((state: RootState) => state.servers.servers);
+  const auth = useSelector((state: RootState) => state.auth);
 
   // Refs
   const inputMessageRef = useRef<HTMLInputElement>(null);
@@ -46,7 +47,7 @@ function App() {
   // Handlers
   const sendMessageHandler = (message: string) => {
     if (currentServer) {
-      dispatch(sendMessageToServer({ message, serverId: currentServer.id }));
+      dispatch(sendMessageToServer({ message, serverId: currentServer.id, userId: auth.userId }));
     } else {
       dispatch(sendMessage(message));
     }

@@ -17,6 +17,9 @@ import userRoutes from '@routes/userRoutes';
 import models from './orm/models';
 const { User, Message, Server, ServerChannel } = models;
 
+// Middleware
+import { authenticateToken } from './middleware/authenticateToken';
+
 const apiPrefix = '/api/v1';
 
 dotenv.config();
@@ -32,7 +35,7 @@ app.get(`${apiPrefix}/`, (req, res) => {
 app.use(`${apiPrefix}/user`, userRoutes);
 
 
-app.get(`${apiPrefix}/messages`, async (req, res) => {
+app.get(`${apiPrefix}/messages`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
     // just get all messages in database
     const messages = await Message.findAll();
@@ -42,7 +45,7 @@ app.get(`${apiPrefix}/messages`, async (req, res) => {
   }
 });
 
-app.get(`${apiPrefix}/messages/:serverId`, async (req, res) => {
+app.get(`${apiPrefix}/messages/:serverId`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
     const { serverId } = req.params;
     const messages = await Message.findAll({ where: { serverId } });
@@ -52,7 +55,7 @@ app.get(`${apiPrefix}/messages/:serverId`, async (req, res) => {
   }
 });
 
-app.post(`${apiPrefix}/messages`, async (req, res) => {
+app.post(`${apiPrefix}/messages`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
     let { message, userId } = req.body;
     if (userId === undefined) {
@@ -68,7 +71,7 @@ app.post(`${apiPrefix}/messages`, async (req, res) => {
         message,
         userId,
         serverId: 1, // TODO: (James) Add server selection
-        createdAt: new Date()
+        createdAt: new Date().toISOString(),
       });
       res.json(messageObj);
     } else {
@@ -79,10 +82,10 @@ app.post(`${apiPrefix}/messages`, async (req, res) => {
   }
 });
 
-app.post(`${apiPrefix}/messages/:serverId`, async (req, res) => {
+app.post(`${apiPrefix}/messages/:serverId`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
-    let { message } = req.body;
-    const user = await User.findOne({ where: { id: 1 } });
+    let { message, userId } = req.body;
+    const user = await User.findOne({ where: { id: userId } });
     if (user) {
       // sanitize
       message = message.replace(/<.*?>/g, '');
@@ -93,7 +96,8 @@ app.post(`${apiPrefix}/messages/:serverId`, async (req, res) => {
         message,
         userId: user.id,
         serverId: serverIdInt,
-        createdAt: new Date()
+        // createAt (UTC time)
+        createdAt: new Date().toISOString(),
       });
       res.json(messageObj);
     } else {
@@ -104,7 +108,7 @@ app.post(`${apiPrefix}/messages/:serverId`, async (req, res) => {
   }
 });
 
-app.get(`${apiPrefix}/servers`, async (req, res) => {
+app.get(`${apiPrefix}/servers`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
     const servers = await Server.findAll();
     res.json(servers);
@@ -113,7 +117,7 @@ app.get(`${apiPrefix}/servers`, async (req, res) => {
   }
 });
 
-app.get(`${apiPrefix}/servers/:serverId/channels`, async (req, res) => {
+app.get(`${apiPrefix}/servers/:serverId/channels`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
     const { serverId } = req.params;
     const channels = await ServerChannel.findAll({ where: { serverId } });
@@ -123,7 +127,7 @@ app.get(`${apiPrefix}/servers/:serverId/channels`, async (req, res) => {
   }
 });
 
-app.post(`${apiPrefix}/servers/:serverId/channels`, async (req, res) => {
+app.post(`${apiPrefix}/servers/:serverId/channels`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
     const { serverId } = req.params;
     const { channelId, name, description, icon } = req.body;
@@ -136,7 +140,7 @@ app.post(`${apiPrefix}/servers/:serverId/channels`, async (req, res) => {
         name,
         description,
         icon,
-        createdAt: new Date()
+        createdAt: new Date().toISOString(),
       });
       res.json(channel);
     } else {

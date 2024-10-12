@@ -18,4 +18,23 @@ const axiosInstance = axios.create({
   },
 });
 
+// Function to set the token
+export function setAuthToken(token: string | null) {
+  if (token) {
+    localStorage.setItem('token', token);
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    localStorage.removeItem('token');
+    delete axiosInstance.defaults.headers.common['Authorization'];
+  }
+}
+
+// Set token if it exists in localStorage
+const token = localStorage.getItem('token');
+if (token) {
+  setAuthToken(token);
+} else if (axiosInstance.defaults.headers.common['Authorization']) {
+  delete axiosInstance.defaults.headers.common['Authorization'];
+}
+
 export { axiosInstance };

@@ -1,11 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosInstance } from '../../axios';
 
+import { setAuthToken } from '../../axios';
+
 interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+  // TODO: (James) Move to User Slice, likely some user/me route
+  userId: number | null;
+  username: string | null;
 }
 
 const initialState: AuthState = {
@@ -13,6 +18,8 @@ const initialState: AuthState = {
   token: null,
   status: 'idle',
   error: null,
+  userId: null,
+  username: null,
 };
 
 export interface LoginCredentials {
@@ -54,6 +61,9 @@ const authSlice = createSlice({
         state.status = 'succeeded';
         state.isAuthenticated = true;
         state.token = action.payload.token;
+        state.userId = action.payload.userId;
+        state.username = action.payload.username;
+        setAuthToken(action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed';
@@ -66,6 +76,9 @@ const authSlice = createSlice({
         state.status = 'succeeded';
         state.isAuthenticated = true;
         state.token = action.payload.token;
+        state.userId = action.payload.userId;
+        state.username = action.payload.username;
+        setAuthToken(action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed';
