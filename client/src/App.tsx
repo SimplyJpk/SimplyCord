@@ -56,7 +56,7 @@ function App() {
   return (
     <div className="flex w-screen h-screen">
       <ServerList onServerSelect={onServerSelect} />
-      <ServerSideBar server={currentServer} />
+      <ServerSideBar server={currentServer} user={user} />
       <div className="flex flex-col w-full h-full">
         <div className="flex-grow w-full overflow-auto bg-blueGray-800">
           <div className="p-2 text-white flex flex-col gap-1">
