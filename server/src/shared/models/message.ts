@@ -6,4 +6,9 @@ export interface MessageAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
+
+  user?: {
+    id: number;
+    username: string;
+  };
 }

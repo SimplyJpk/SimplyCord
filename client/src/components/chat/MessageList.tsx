@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { MessageAttributes } from '@shared/models/message';
 
-import Message from '../../components/Message';
+import Message from './Message';
 
 export default function MessageList({
   messages,

@@ -1,15 +1,15 @@
 import { MessageAttributes } from '@shared/models/message';
 // Utils
-import { getMessageDate } from '../util/dateUtil'
+import { getMessageDate } from '../../util/dateUtil'
 // Resources
-import DefaultAvatar from '../assets/icons/profile.png'
+import DefaultAvatar from '../../assets/icons/profile.png'
 
 export default function Message({ message }: { message: MessageAttributes }) {
   return (
     <div className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm">
       <div className="flex-shrink-0">
         <img
-          src={message.avatar ?? DefaultAvatar}
+          src={message.user?.avatar ?? DefaultAvatar}
           alt="avatar"
           className="w-14 h-14 rounded-full"
         />
@@ -19,7 +19,7 @@ export default function Message({ message }: { message: MessageAttributes }) {
           <span
             className="text-gray-900 
           font-bold hover:underline">
-            {message.userId}
+            {message.user?.username ?? message.userId}
           </span>
           <span
             className="text-gray-500">

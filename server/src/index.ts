@@ -48,7 +48,16 @@ app.get(`${apiPrefix}/messages`, authenticateToken as express.RequestHandler, as
 app.get(`${apiPrefix}/messages/:serverId`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
     const { serverId } = req.params;
-    const messages = await Message.findAll({ where: { serverId } });
+    const messages = await Message.findAll({
+      where: { serverId },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username'],
+        },
+      ]
+    });
     res.json(messages);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
@@ -73,6 +82,8 @@ app.post(`${apiPrefix}/messages`, authenticateToken as express.RequestHandler, a
         serverId: 1, // TODO: (James) Add server selection
         createdAt: new Date().toISOString(),
       });
+
+      // TODO: (James) Return username? and/or user model object?
       res.json(messageObj);
     } else {
       res.status(401).json({ error: 'Invalid user' });
