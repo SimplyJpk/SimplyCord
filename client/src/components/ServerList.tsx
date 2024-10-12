@@ -10,7 +10,7 @@ export default function ServerList({
   const servers = useSelector((state: RootState) => state.servers.servers);
 
   return (
-    <div className="w-20 h-screen bg-gray-800 text-white">
+    <div className="w-20 h-screen bg-gray-900 text-white">
       <div className="flex flex-col gap-2 p-2">
         {servers.map((server: ServerAttributes, index) => (
           <div

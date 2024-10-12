@@ -22,67 +22,67 @@ async function initializeDatabase() {
     await sequelizeInstance.authenticate();
     console.log('Connection has been established successfully.');
 
-    // Drop all existing tables and start fresh
-    await sequelizeInstance.queryInterface.dropAllTables();
-    console.log('Dropped all tables');
+    //   // Drop all existing tables and start fresh
+    //   await sequelizeInstance.queryInterface.dropAllTables();
+    //   console.log('Dropped all tables');
 
-    // Synchronize all models
-    await sequelizeInstance.sync({ force: true });
-    console.log('Forced database synced');
+    //   // Synchronize all models
+    //   await sequelizeInstance.sync({ force: true });
+    //   console.log('Forced database synced');
 
-    const transaction = await sequelizeInstance.transaction(async () => {
-      console.log('Started transaction');
+    //   const transaction = await sequelizeInstance.transaction(async () => {
+    //     console.log('Started transaction');
 
-      const user = await models.User.create({
-        username: 'testuser',
-        email: 'testuser@test.com',
-        password: 'testpassword',
-        salt: 'test',
-        nonce: 'test',
-        passwordChanged: new Date(),
-        reset: 0,
-      });
-      console.log('Created user');
+    //     const user = await models.User.create({
+    //       username: 'testuser',
+    //       email: 'testuser@test.com',
+    //       password: 'testpassword',
+    //       salt: 'test',
+    //       nonce: 'test',
+    //       passwordChanged: new Date(),
+    //       reset: 0,
+    //     });
+    //     console.log('Created user');
 
-      const server1 = await models.Server.create({
-        name: 'Server 1',
-        gid: 'server1',
-        description: 'This is the first server',
-        icon: '',
-      });
-      console.log('Created server 1');
+    //     const server1 = await models.Server.create({
+    //       name: 'Server 1',
+    //       gid: 'server1',
+    //       description: 'This is the first server',
+    //       icon: '',
+    //     });
+    //     console.log('Created server 1');
 
-      const server2 = await models.Server.create({
-        name: 'Server 2',
-        gid: 'server2',
-        description: 'This is the second server',
-        icon: '',
-      });
-      console.log('Created server 2');
+    //     const server2 = await models.Server.create({
+    //       name: 'Server 2',
+    //       gid: 'server2',
+    //       description: 'This is the second server',
+    //       icon: '',
+    //     });
+    //     console.log('Created server 2');
 
-      const server3 = await models.Server.create({
-        name: 'Server 3',
-        gid: 'server3',
-        description: 'This is the third server',
-        icon: '',
-      });
+    //     const server3 = await models.Server.create({
+    //       name: 'Server 3',
+    //       gid: 'server3',
+    //       description: 'This is the third server',
+    //       icon: '',
+    //     });
 
-      console.log('Created server 3');
+    //     console.log('Created server 3');
 
-      const servers = [server1, server2, server3];
-      for (const server of servers) {
-        for (let i = 0; i < randomInt(2, 7); i++) {
-          await models.Message.create({
-            message: `Message ${i + 1}`,
-            userId: user.id,
-            serverId: server.id,
-            createdAt: new Date().toISOString(),
-          });
-        }
-      }
+    //     const servers = [server1, server2, server3];
+    //     for (const server of servers) {
+    //       for (let i = 0; i < randomInt(2, 7); i++) {
+    //         await models.Message.create({
+    //           message: `Message ${i + 1}`,
+    //           userId: user.id,
+    //           serverId: server.id,
+    //           createdAt: new Date().toISOString(),
+    //         });
+    //       }
+    //     }
 
-    });
-    console.log('Transaction committed');
+    //   });
+    //   console.log('Transaction committed');
   } catch (err) {
     console.error('Unable to connect to the database:', err);
   }

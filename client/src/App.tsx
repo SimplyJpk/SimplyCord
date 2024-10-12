@@ -9,6 +9,7 @@ import './App.css'
 // App component
 import InputBar from './components/InputBar';
 import ServerList from './components/ServerList';
+import ServerSideBar from './components/ServerSideBar';
 import MessageList from './components/chat/MessageList';
 
 import { ServerAttributes } from '@shared/models/server';
@@ -60,6 +61,7 @@ function App() {
   return (
     <div className="flex w-screen h-screen">
       <ServerList onServerSelect={onServerSelect} />
+      <ServerSideBar server={currentServer} />
       <div className="flex flex-col w-full h-full">
         <div className="flex-grow w-full overflow-auto bg-blueGray-800">
           <div className="p-2 text-white flex flex-col gap-1">

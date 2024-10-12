@@ -1,3 +1,5 @@
+import { ServerChannelAttributes } from './serverChannel';
+
 export interface ServerAttributes {
   id: number;
   gid: string;
@@ -7,4 +9,6 @@ export interface ServerAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
+
+  channels?: ServerChannelAttributes[];
 }
