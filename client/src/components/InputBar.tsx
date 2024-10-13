@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // Resources
 import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png'
 // Validation
-import { messageSchema } from "../../../server/src/shared/validation/message";
+import { messageSchema } from "@shared/validation/message";
 
 interface InputBarProps {
   onSubmit: (message: string) => void;
