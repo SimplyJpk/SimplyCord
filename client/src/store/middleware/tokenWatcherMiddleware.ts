@@ -1,5 +1,5 @@
 import { Middleware } from '@reduxjs/toolkit';
-import { selectToken, selectIsAuthenticated, fetchUserProfile } from '@slices/authSlice';
+import { selectToken, selectIsAuthenticated, fetchUserProfile } from '../../slices/authSlice';
 
 const tokenWatcherMiddleware: Middleware = (storeAPI) => (next) => async (action) => {
   const previousToken = selectToken(storeAPI.getState());

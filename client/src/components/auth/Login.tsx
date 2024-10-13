@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, LoginCredentials } from '@slices/authSlice';
-import { RootState } from '@store/store';
-import { AppDispatch } from '@store/store';
+import { loginUser, LoginCredentials } from '../../slices/authSlice';
+import { RootState } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 
 const Login: React.FC = () => {
 

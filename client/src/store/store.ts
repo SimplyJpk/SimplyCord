@@ -2,13 +2,13 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 // import { composeWithDevTools } from 'redux-devtools-extension'; // TODO: (James) Add
 
-import tokenWatcherMiddleware from '@middleware/tokenWatcherMiddleware'
+import tokenWatcherMiddleware from './middleware/tokenWatcherMiddleware'
 
-import appReducer from '@slices/app';
-import messagesReducer from '@slices/messageSlice';
-import serversReducer from '@slices/serverSlice';
-import authReducer from '@slices/authSlice';
-import userReducer from '@slices/userSlice';
+import appReducer from '../../src/slices/app';
+import messagesReducer from '../../src/slices/messageSlice';
+import serversReducer from '../../src/slices/serverSlice';
+import authReducer from '../../src/slices/authSlice';
+import userReducer from '../../src/slices/userSlice';
 
 const combinedReducers = combineReducers({
   app: appReducer,

@@ -1,8 +1,8 @@
 import { MessageAttributes } from '@shared/models/message';
 // Utils
-import { getMessageDate } from '@util/dateUtil'
+import { getMessageDate } from '../../util/dateUtil'
 // Resources
-import DefaultAvatar from '@icons/profile.png'
+import DefaultAvatar from '../../assets/icons/profile.png'
 
 export default function Message({ message }: { message: MessageAttributes }) {
   return (

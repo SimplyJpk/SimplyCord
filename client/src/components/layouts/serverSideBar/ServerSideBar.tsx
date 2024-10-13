@@ -5,7 +5,7 @@ import { ServerChannelAttributes } from '@shared/models/serverChannel';
 
 import { UserAttributes } from '@shared/models/user';
 
-import { AppDispatch } from '@store/store';
+import { AppDispatch } from '../../../store/store';
 
 // Components
 import UserBar from './UserBar';

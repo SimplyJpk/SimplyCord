@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance, setAuthToken } from '@root/axios';
+import { axiosInstance, setAuthToken } from '../../axios';
 
 interface AuthState {
   isAuthenticated: boolean;

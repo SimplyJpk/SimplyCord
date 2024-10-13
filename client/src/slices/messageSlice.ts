@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from '@root/axios';
+import { axiosInstance } from '../../axios';
 
 import { MessageAttributes } from '@shared/models/message';
 
