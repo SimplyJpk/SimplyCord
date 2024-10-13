@@ -9,6 +9,7 @@ import sequelizeInstance from './config/database';
 
 // Routes
 import userRoutes from '@routes/userRoutes';
+import serverRoutes from '@routes/serverRoutes';
 
 // Controllers
 // TODO: (James) Prob don't need to import these
@@ -33,6 +34,8 @@ app.get(`${apiPrefix}/`, (req, res) => {
 });
 
 app.use(`${apiPrefix}/user`, userRoutes);
+
+app.use(`${apiPrefix}/servers`, serverRoutes);
 
 
 app.get(`${apiPrefix}/messages`, authenticateToken as express.RequestHandler, async (req, res) => {
@@ -114,25 +117,6 @@ app.post(`${apiPrefix}/messages/:serverId`, authenticateToken as express.Request
     } else {
       res.status(401).json({ error: 'Invalid user' });
     }
-  } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
-  }
-});
-
-app.get(`${apiPrefix}/servers`, authenticateToken as express.RequestHandler, async (req, res) => {
-  try {
-    const servers = await Server.findAll();
-    res.json(servers);
-  } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
-  }
-});
-
-app.get(`${apiPrefix}/servers/:serverId/channels`, authenticateToken as express.RequestHandler, async (req, res) => {
-  try {
-    const { serverId } = req.params;
-    const channels = await ServerChannel.findAll({ where: { serverId } });
-    res.json(channels);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
