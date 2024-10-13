@@ -9,6 +9,7 @@ import { ServerAttributes } from '@shared/models/server';
 import {
   getServers,
   getServerChannels,
+  getServerUsers,
 } from '@controllers/serverController';
 
 const router = express.Router();
@@ -33,6 +34,16 @@ router.get('/:serverId/channels', authenticateToken as express.RequestHandler, a
     if (!res.headersSent) {
       res.json(channels);
     }
+  } catch (error) {
+    if (!res.headersSent) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  }
+});
+
+router.get('/:serverId/users', authenticateToken as express.RequestHandler, async (req, res) => {
+  try {
+    await getServerUsers(req, res);
   } catch (error) {
     if (!res.headersSent) {
       res.status(500).json({ error: (error as Error).message });
