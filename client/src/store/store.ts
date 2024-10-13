@@ -1,4 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
 // import { composeWithDevTools } from 'redux-devtools-extension'; // TODO: (James) Add
 
 import tokenWatcherMiddleware from './middleware/tokenWatcherMiddleware'
@@ -17,8 +18,10 @@ const combinedReducers = combineReducers({
 
 const store = configureStore({
   reducer: combinedReducers,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
-    tokenWatcherMiddleware
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([
+    tokenWatcherMiddleware,
+    logger,
+  ]
   ),
   devTools: process.env.NODE_ENV === 'development',
 });
