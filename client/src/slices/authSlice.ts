@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from '../../axios';
-
-import { setAuthToken } from '../../axios';
+import { axiosInstance, setAuthToken } from '../../axios';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -43,11 +41,28 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (credent
   return response.data;
 });
 
+export const fetchUserProfile = createAsyncThunk('user/me', async () => {
+  const response = await axiosInstance.get('/user/me');
+  return response.json();
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
     logout(state) {
+      state.isAuthenticated = false;
+      state.token = null;
+    },
+    setAuthSuccess(state, action) {
+      state.isAuthenticated = true;
+      state.token = action.payload.token;
+    },
+    setAuthFailure(state, action) {
+      state.isAuthenticated = false;
+      state.token = null;
+    },
+    clearAuth(state) {
       state.isAuthenticated = false;
       state.token = null;
     },
@@ -83,10 +98,36 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to register';
+      })
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.userId = action.payload.userId;
+        state.username = action.payload.username;
+        setAuthToken(action.payload.token);
+      })
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Failed to fetch user';
+        state.userId = null;
+        state.username = null;
+        setAuthToken(null);
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const {
+  logout,
+  setAuthSuccess,
+  setAuthFailure,
+  clearAuth,
+} = authSlice.actions;
+
+export const selectToken = (state) => state.auth.token;
+export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
 
 export default authSlice.reducer;
+
+export type { AuthState };

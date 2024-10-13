@@ -70,3 +70,5 @@ const messagesSlice = createSlice({
 });
 
 export default messagesSlice.reducer;
+
+export type { MessagesState };

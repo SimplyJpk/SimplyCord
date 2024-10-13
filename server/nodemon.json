@@ -3,5 +3,6 @@
     "src"
   ],
   "ext": "ts,js,json",
-  "exec": "npm run build && node -r ts-node/register -r tsconfig-paths/register src/index.ts"
+  "exec": "node -r ts-node/register -r tsconfig-paths/register --inspect src/index.ts",
+  "withBuild": "exec\": \"npm run build && node -r ts-node/register -r tsconfig-paths/register src/index.ts"
 }

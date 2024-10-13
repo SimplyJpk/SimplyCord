@@ -3,7 +3,6 @@ import { RootState } from './store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from './store/store.ts';
 import { fetchServerMessages, sendMessageToServer } from './slices/messageSlice';
-import { fetchUser } from './slices/userSlice';
 import { fetchServers } from './slices/serverSlice';
 import './App.css'
 
@@ -30,8 +29,6 @@ function App() {
   useEffect(() => {
     dispatch(fetchServers());
   }, [dispatch]);
-
-  useEffect(() => { dispatch(fetchUser()); }, [dispatch]);
 
   useEffect(() => {
     if (currentServer) {

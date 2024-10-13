@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { ServerAttributes } from '@shared/models/server';
 import { ServerChannelAttributes } from '@shared/models/serverChannel';
 
@@ -6,6 +8,9 @@ import DefaultAvatar from '../assets/icons/profile.png'
 
 import { UserAttributes } from '@shared/models/user';
 
+import { logout } from '../slices/authSlice';
+import { AppDispatch } from '../store/store';
+
 export default function ServerSideBar({
   server,
   user,
@@ -13,6 +18,8 @@ export default function ServerSideBar({
   server: ServerAttributes;
   user: UserAttributes;
 }) {
+  const dispatch: AppDispatch = useDispatch();
+
   return (
     <div className="w-80 h-screen bg-gray-800 text-white relative border-r border-gray-700 overflow-hidden">
       <div className="flex items-center gap-2 h-12 w-full cursor-pointer hover:bg-gray-900 p-2">
@@ -54,6 +61,7 @@ export default function ServerSideBar({
               alt="settings-cog"
               // rotate on hover, get darker
               className="w-6 h-6 invert ml-auto cursor-pointer hover:rotate-90 transition-all duration-500 hover:scale-125"
+              onClick={() => dispatch(logout())}
             />
           </div>
         </div>

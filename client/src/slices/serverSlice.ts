@@ -41,3 +41,5 @@ const serversSlice = createSlice({
 });
 
 export default serversSlice.reducer;
+
+export type { ServersState };
