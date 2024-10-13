@@ -1,9 +1,8 @@
-import React from 'react';
-
-import { useState } from 'react'
-import { useEffect } from 'react'
-
+import React, { useState, useEffect } from 'react';
+// Resources
 import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png'
+// Validation
+import { messageSchema } from "@shared/validation/message";
 
 interface InputBarProps {
   onSubmit: (message: string) => void;
@@ -17,6 +16,7 @@ const InputBar: React.FC<InputBarProps> = ({
   disabled,
 }) => {
   const [input, setInput] = useState('')
+  const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -26,12 +26,16 @@ const InputBar: React.FC<InputBarProps> = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value)
+    // messageSchema is yup
+    const isValid = messageSchema.isValidSync({ message: event.target.value });
+    setIsValid(isValid);
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     onSubmit(input)
+    setIsValid(false);
 
     const inputElement = (event.target as HTMLFormElement).elements.namedItem('message') as HTMLInputElement
     setInput('')
@@ -56,11 +60,14 @@ const InputBar: React.FC<InputBarProps> = ({
           className="rounded-lg text-white bg-gray-800 p-2 w-full"
           placeholder="Type your message here..."
           disabled={disabled}
+          autoComplete="off"
+          autoCorrect="off"
         />
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
-          disabled={disabled}
+          // color red if invalid
+          className="hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg bg-blue-500 disabled:bg-gray-500"
+          disabled={disabled || !isValid}
         >
           Send
         </button>
