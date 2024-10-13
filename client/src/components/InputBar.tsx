@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 // Resources
 import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png'
 // Validation
-import { messageSchema } from "@shared/validation/message";
+import * as yup from 'yup';
+
+// FIXME: (James) Why no shared/validation import work
+const messageSchema = yup.object().shape({
+  message: yup.string().max(200).min(2).required(),
+});
 
 interface InputBarProps {
   onSubmit: (message: string) => void;
