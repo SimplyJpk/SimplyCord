@@ -16,6 +16,7 @@ import InputBar from './components/InputBar';
 import ServerList from './components/ServerList';
 import ServerSideBar from './components/layouts/serverSideBar/ServerSideBar';
 import MessageList from './components/chat/MessageList';
+import UserSideBar from './components/layouts/serverSideBar/UserSideBar';
 
 import { ServerAttributes } from '@shared/models/server';
 
@@ -92,6 +93,7 @@ function App() {
           disabled={!currentServerId}
         />
       </div>
+      <UserSideBar />
     </div>
   )
 }
