@@ -7,6 +7,7 @@ import {
 import sequelizeInstance from '../../config/database';
 
 import { UserAttributes } from '@shared/models/user';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface ServerUserAttributes extends UserAttributes {
   // id: number;
@@ -24,6 +25,7 @@ export interface ServerUserAttributes extends UserAttributes {
 
 class User extends Model implements UserAttributes {
   public id!: CreationOptional<number>;
+  public gid!: string;
   public username!: string;
   public email!: string;
   public password!: string;
@@ -47,6 +49,12 @@ User.init(
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
+    },
+    gid: {
+      type: DataTypes.STRING,
+      // Allowed, but is enforced by the hook
+      allowNull: true,
+      unique: true,
     },
     username: {
       type: DataTypes.STRING,
@@ -85,6 +93,13 @@ User.init(
     tableName: 'users',
     modelName: 'User',
     paranoid: true,
+    hooks: {
+      beforeCreate: async (user: User) => {
+        if (!user.gid) {
+          user.gid = uuidv4();
+        }
+      }
+    }
   }
 );
 
