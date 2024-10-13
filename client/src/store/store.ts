@@ -4,12 +4,14 @@ import logger from 'redux-logger';
 
 import tokenWatcherMiddleware from './middleware/tokenWatcherMiddleware'
 
+import appReducer from '../../src/slices/app';
 import messagesReducer from '../../src/slices/messageSlice';
 import serversReducer from '../../src/slices/serverSlice';
 import authReducer from '../../src/slices/authSlice';
 import userReducer from '../../src/slices/userSlice';
 
 const combinedReducers = combineReducers({
+  app: appReducer,
   messages: messagesReducer,
   servers: serversReducer,
   user: userReducer,
