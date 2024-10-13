@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { MessageAttributes } from '@shared/models/message';
-import { RootState } from '../../store/store';
+import { RootState } from '@store/store';
 
 import Message from './Message';
 
 import {
   selectCurrentServerId,
   selectCurrentServerChannelId
-} from '../../slices/app';
+} from '@slices/app';
 
 export default function MessageList({
   messages,

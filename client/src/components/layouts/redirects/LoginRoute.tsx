@@ -1,11 +1,11 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import useAuth from '../../../hooks/useAuth';
-import type { AppDispatch } from '../../../store/store.ts';
-import { RootState } from '../../../store/store';
+import useAuth from '@hooks/useAuth';
+import type { AppDispatch } from '@store/store.ts';
+import { RootState } from '@store/store';
 import { useDispatch, useSelector } from 'react-redux';
 // Slice
-import { fetchMe } from '../../../slices/userSlice';
+import { fetchMe } from '@slices/userSlice';
 
 const LoginRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch: AppDispatch = useDispatch();

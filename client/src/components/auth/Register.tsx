@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser, RegisterCredentials } from '../../slices/authSlice';
-import { RootState } from '../../store/store';
-import { AppDispatch } from '../../store/store';
+import { registerUser, RegisterCredentials } from '@slices/authSlice';
+import { RootState } from '@store/store';
+import { AppDispatch } from '@store/store';
 
 const Register: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

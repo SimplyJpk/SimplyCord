@@ -3,8 +3,8 @@ import { RootState } from '../store/store';
 
 import { ServerAttributes } from '@shared/models/server';
 
-import DefaultAvatar from '../assets/icons/profile.png'
-import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png'
+import DefaultAvatar from '@icons/profile.png'
+import PlusCircle from '@icons/ui/iconmonstr-plus-circle-lined-240.png'
 
 export default function ServerList({
   onServerSelect,

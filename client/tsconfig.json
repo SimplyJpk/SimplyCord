@@ -9,7 +9,31 @@
       ],
       "@shared/*": [
         "../server/src/shared/*"
-      ]
+      ],
+      "@icons*": [
+        "src/assets/icons/*"
+      ],
+      "@slices/*": [
+        "src/slices/*"
+      ],
+      "@store/*": [
+        "src/store/*"
+      ],
+      "@middleware/*": [
+        "src/store/middleware/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@pages/*": [
+        "src/pages/*"
+      ],
+      "@util/*": [
+        "src/util/*"
+      ],
+      "@root/*": [
+        "../client/*"
+      ],
     },
     "jsx": "react-jsx"
   }
