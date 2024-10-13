@@ -17,6 +17,7 @@
     "@sequelize/core": "^7.0.0-alpha.42",
     "@sequelize/mysql": "^7.0.0-alpha.43",
     "@types/uuid": "^10.0.0",
+    "@types/yup": "^0.32.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -29,7 +30,8 @@
     "tsconfig-paths": "^4.2.0",
     "uuid": "^10.0.0",
     "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "yup": "^1.4.0"
   },
   "scripts": {
     "build": "rm -rf dist && tsc",
