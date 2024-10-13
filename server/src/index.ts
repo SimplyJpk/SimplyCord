@@ -1,4 +1,5 @@
-import express from 'express';
+import './types/express/index.t';
+import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import fs from 'fs';
@@ -67,38 +68,13 @@ app.get(`${apiPrefix}/messages/:serverId`, authenticateToken as express.RequestH
   }
 });
 
-app.post(`${apiPrefix}/messages`, authenticateToken as express.RequestHandler, async (req, res) => {
-  try {
-    let { message, userId } = req.body;
-    if (userId === undefined) {
-      userId = 1;
-    }
-    const user = await User.findOne({ where: { id: userId } });
-    if (user) {
-      // sanitize
-      message = message.replace(/<.*?>/g, '');
-
-      // TODO: (James) Add server selection
-      const messageObj = await Message.create({
-        message,
-        userId,
-        serverId: 1, // TODO: (James) Add server selection
-        createdAt: new Date().toISOString(),
-      });
-
-      // TODO: (James) Return username? and/or user model object?
-      res.json(messageObj);
-    } else {
-      res.status(401).json({ error: 'Invalid user' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
+app.post(`${apiPrefix}/messages/:serverId`, authenticateToken as express.RequestHandler, async (req: Request, res: Response) => {
+  if (!req.user) {
+    res.status(401).json({ error: 'Invalid user' });
   }
-});
-
-app.post(`${apiPrefix}/messages/:serverId`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
-    let { message, userId } = req.body;
+    let { message } = req.body;
+    const userId = req.user?.id;
     const user = await User.findOne({ where: { id: userId } });
     if (user) {
       // sanitize
@@ -113,7 +89,8 @@ app.post(`${apiPrefix}/messages/:serverId`, authenticateToken as express.Request
         // createAt (UTC time)
         createdAt: new Date().toISOString(),
       });
-      res.json(messageObj);
+      // TODO: (James) We don't want to destructure the user object, but we do want to return the username, and/or make user aware enough they handle it
+      res.json({ ...messageObj.dataValues, user: { userId: user.id, username: user.username } });
     } else {
       res.status(401).json({ error: 'Invalid user' });
     }

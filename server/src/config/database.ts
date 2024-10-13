@@ -22,67 +22,83 @@ async function initializeDatabase() {
     await sequelizeInstance.authenticate();
     console.log('Connection has been established successfully.');
 
-    //   // Drop all existing tables and start fresh
-    //   await sequelizeInstance.queryInterface.dropAllTables();
-    //   console.log('Dropped all tables');
+    // Drop all existing tables and start fresh
+    await sequelizeInstance.queryInterface.dropAllTables();
+    console.log('Dropped all tables');
 
-    //   // Synchronize all models
-    //   await sequelizeInstance.sync({ force: true });
-    //   console.log('Forced database synced');
+    // Synchronize all models
+    await sequelizeInstance.sync({ force: true });
+    console.log('Forced database synced');
 
-    //   const transaction = await sequelizeInstance.transaction(async () => {
-    //     console.log('Started transaction');
+    const transaction = await sequelizeInstance.transaction(async () => {
+      console.log('Started transaction');
 
-    //     const user = await models.User.create({
-    //       username: 'testuser',
-    //       email: 'testuser@test.com',
-    //       password: 'testpassword',
-    //       salt: 'test',
-    //       nonce: 'test',
-    //       passwordChanged: new Date(),
-    //       reset: 0,
-    //     });
-    //     console.log('Created user');
+      const user = await models.User.create({
+        username: 'testuser',
+        gid: 'testuser',
+        email: 'testuser@test.com',
+        password: 'testpassword',
+        salt: 'test',
+        nonce: 'test',
+        passwordChanged: new Date(),
+        reset: 0,
+      });
+      console.log('Created user');
 
-    //     const server1 = await models.Server.create({
-    //       name: 'Server 1',
-    //       gid: 'server1',
-    //       description: 'This is the first server',
-    //       icon: '',
-    //     });
-    //     console.log('Created server 1');
+      if (process.env.TEST_USER) {
+        const testUser = process.env.TEST_USER.replace(/\s/g, '').replace(/'/g, '').split(',');
+        await models.User.create({
+          username: testUser[1],
+          gid: testUser[0],
+          email: testUser[2],
+          password: testUser[3],
+          salt: testUser[4],
+          nonce: testUser[5],
+          passwordChanged: new Date(),
+          reset: 0,
+        });
+        console.log('Created test user');
+      }
 
-    //     const server2 = await models.Server.create({
-    //       name: 'Server 2',
-    //       gid: 'server2',
-    //       description: 'This is the second server',
-    //       icon: '',
-    //     });
-    //     console.log('Created server 2');
+      const server1 = await models.Server.create({
+        name: 'Server 1',
+        gid: 'server1',
+        description: 'This is the first server',
+        icon: '',
+      });
+      console.log('Created server 1');
 
-    //     const server3 = await models.Server.create({
-    //       name: 'Server 3',
-    //       gid: 'server3',
-    //       description: 'This is the third server',
-    //       icon: '',
-    //     });
+      const server2 = await models.Server.create({
+        name: 'Server 2',
+        gid: 'server2',
+        description: 'This is the second server',
+        icon: '',
+      });
+      console.log('Created server 2');
 
-    //     console.log('Created server 3');
+      const server3 = await models.Server.create({
+        name: 'Server 3',
+        gid: 'server3',
+        description: 'This is the third server',
+        icon: '',
+      });
 
-    //     const servers = [server1, server2, server3];
-    //     for (const server of servers) {
-    //       for (let i = 0; i < randomInt(2, 7); i++) {
-    //         await models.Message.create({
-    //           message: `Message ${i + 1}`,
-    //           userId: user.id,
-    //           serverId: server.id,
-    //           createdAt: new Date().toISOString(),
-    //         });
-    //       }
-    //     }
+      console.log('Created server 3');
 
-    //   });
-    //   console.log('Transaction committed');
+      const servers = [server1, server2, server3];
+      for (const server of servers) {
+        for (let i = 0; i < randomInt(2, 7); i++) {
+          await models.Message.create({
+            message: `Message ${i + 1}`,
+            userId: user.id,
+            serverId: server.id,
+            createdAt: new Date().toISOString(),
+          });
+        }
+      }
+
+    });
+    console.log('Transaction committed');
   } catch (err) {
     console.error('Unable to connect to the database:', err);
   }

@@ -33,14 +33,13 @@ export function setAuthToken(token: string | null) {
 
 // Set token if it exists in localStorage
 export function getAuthToken() {
-  const token = localStorage.getItem('token');
-  if (token) {
-    return token;
+  let token = localStorage.getItem('token');
+  if (!token) {
+    if (axiosInstance.defaults.headers.common['Authorization']) {
+      token = axiosInstance.defaults.headers.common['Authorization'].split(' ')[1];
+    }
   }
-  if (axiosInstance.defaults.headers.common['Authorization']) {
-    return axiosInstance.defaults.headers.common['Authorization'].split(' ')[1];
-  }
-  return null;
+  return token;
 }
 
 // Function to initialize the session
@@ -49,20 +48,19 @@ export async function initializeSession() {
   const token = getAuthToken();
   if (token) {
     setAuthToken(token);
-    // store.dispatch(setAuthStart());
+    // store.dispatch(setAuthStart()); // TODO: (James) isBusy/Loading state
     try {
       const response = await axiosInstance.get('/user/me');
       store.dispatch(setAuthSuccess({ token }));
       return response.data; // User profile data
     } catch (error) {
       console.error('Failed to fetch user profile:', error);
-      setAuthToken(null); // Clear the token if the request fails
-      store.dispatch(setAuthFailure({ error: error.message }));
-      // Handle error (e.g., redirect to login page)
+      setAuthToken(null);
+      // Handle this better?
+      // store.dispatch(setAuthFailure({ error: error.message }));
     }
   } else {
     store.dispatch(clearAuth());
-    // Handle case where there is no token (e.g., redirect to login page)
   }
 }
 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export function authenticateToken(req: Request, res: Response, next: NextFunction) {
   const token = req.headers['authorization']?.split(' ')[1];
@@ -11,8 +11,8 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
     if (err) {
       return res.sendStatus(403);
     }
-    // TODO: (James) Look into how to do this without just casting any
     (req as any).user = user;
+
     next();
   });
 }

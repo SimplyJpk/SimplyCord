@@ -6,9 +6,6 @@ interface AuthState {
   token: string | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
-  // TODO: (James) Move to User Slice, likely some user/me route
-  userId: number | null;
-  username: string | null;
 }
 
 const initialState: AuthState = {
@@ -16,8 +13,6 @@ const initialState: AuthState = {
   token: null,
   status: 'idle',
   error: null,
-  userId: null,
-  username: null,
 };
 
 export interface LoginCredentials {
@@ -58,7 +53,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.token = action.payload.token;
     },
-    setAuthFailure(state, action) {
+    setAuthFailure(state) {
       state.isAuthenticated = false;
       state.token = null;
     },
@@ -74,11 +69,9 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        setAuthToken(action.payload.token);
         state.isAuthenticated = true;
         state.token = action.payload.token;
-        state.userId = action.payload.userId;
-        state.username = action.payload.username;
-        setAuthToken(action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed';
@@ -89,31 +82,13 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        setAuthToken(action.payload.token);
         state.isAuthenticated = true;
         state.token = action.payload.token;
-        state.userId = action.payload.userId;
-        state.username = action.payload.username;
-        setAuthToken(action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to register';
-      })
-      .addCase(fetchUserProfile.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchUserProfile.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.userId = action.payload.userId;
-        state.username = action.payload.username;
-        setAuthToken(action.payload.token);
-      })
-      .addCase(fetchUserProfile.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || 'Failed to fetch user';
-        state.userId = null;
-        state.username = null;
-        setAuthToken(null);
       });
   },
 });

@@ -2,7 +2,9 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+
 import { User } from "@orm/models";
+import { UserAttributes } from '@shared/models/user';
 
 export async function registerUser(req: Request, res: Response) {
   const { username, email, password } = req.body;
@@ -71,6 +73,28 @@ export async function loginUser(req: Request, res: Response) {
       }
     } else {
       res.status(401).json({ error: 'Invalid credentials' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+}
+
+export async function getUser(req: Request, res: Response) {
+  try {
+    const userId = req.user?.id;
+    if (userId) {
+      const user = await User.findOne({
+        where: { id: userId },
+        // TODO: (James) Attribute scope limited to front-end related fields
+        attributes: ['id', 'username', 'email'],
+      });
+      if (user) {
+        res.json(user);
+      } else {
+        res.status(401).json({ error: 'Invalid user' });
+      }
+    } else {
+      res.status(401).json({ error: 'Invalid user' });
     }
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });

@@ -5,7 +5,7 @@ import type { AppDispatch } from '../../../store/store.ts';
 import { RootState } from '../../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 // Slice
-import { fetchUserProfile } from '../../../slices/authSlice';
+import { fetchMe } from '../../../slices/userSlice';
 
 const LoginRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -20,7 +20,7 @@ const LoginRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       return <Navigate to="/" />;
     }
   } else if (auth.token) {
-    dispatch(fetchUserProfile());
+    dispatch(fetchMe());
   }
 
   return <>{children}</>;

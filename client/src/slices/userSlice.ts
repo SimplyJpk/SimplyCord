@@ -16,11 +16,28 @@ const initialState: UserState = {
   error: null,
 };
 
+export const fetchMe = createAsyncThunk('user/me', async () => {
+  const response = await axiosInstance.get('/user/me');
+  return response.data;
+});
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder
+      .addCase(fetchMe.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchMe.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user = action.payload;
+      })
+      .addCase(fetchMe.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Failed to fetch user';
+      });
   },
 });
 

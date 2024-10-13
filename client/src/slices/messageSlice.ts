@@ -24,13 +24,12 @@ export const fetchServerMessages = createAsyncThunk('messages/fetchServerMessage
 interface SendMessagePayload {
   message: string;
   serverId: number;
-  userId: number;
 }
 
 export const sendMessageToServer = createAsyncThunk(
   'messages/sendMessageToServer',
-  async ({ message, serverId, userId }: SendMessagePayload) => {
-    const response = await axiosInstance.post(`/messages/${serverId}`, { message, userId });
+  async ({ message, serverId }: SendMessagePayload) => {
+    const response = await axiosInstance.post(`/messages/${serverId}`, { message });
     return response.data;
   }
 );
