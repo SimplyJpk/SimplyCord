@@ -8,7 +8,7 @@ import { UserAttributes } from '@shared/models/user';
 import { AppDispatch } from '../../../store/store';
 
 // Components
-import UserBar from './UserBar';
+import UserPrimary from '../../user/UserPrimary';
 
 export default function ServerSideBar({
   server,
@@ -41,7 +41,7 @@ export default function ServerSideBar({
         </div>
       </div>
       <div className="w-full flex flex-col absolute bottom-0">
-        <UserBar user={user} />
+        <UserPrimary user={user} />
       </div>
     </div>
   );

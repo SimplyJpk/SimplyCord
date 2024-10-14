@@ -1,14 +1,14 @@
 import { useDispatch } from 'react-redux';
 
-import SettingsCog from '../../../assets/icons/ui/iconmonstr-gear-6-240.png';
-import DefaultAvatar from '../../../assets/icons/profile.png'
+import SettingsCog from './../../assets/icons/ui/iconmonstr-gear-6-240.png';
+import DefaultAvatar from './../../assets/icons/profile.png'
 
 import { UserAttributes } from '@shared/models/user';
 
-import { logout } from '../../../slices/authSlice';
-import { AppDispatch } from '../../../store/store';
+import { logout } from '../../slices/authSlice';
+import { AppDispatch } from '../../store/store';
 
-export default function UserBar({
+export default function UserPrimary({
   user,
 }: {
   user: UserAttributes;
