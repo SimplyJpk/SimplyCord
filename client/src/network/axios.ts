@@ -1,17 +1,16 @@
 import axios from 'axios';
-import store from "./src/store/store";
-import { setAuthSuccess, setAuthFailure, clearAuth } from "./src/slices/authSlice";
 
-// TODO: (James) Move to .env
-let apiBaseUrl: string;
-if (process.env.NODE_ENV === 'development') {
-  apiBaseUrl = 'http://localhost:3000/api/v1';
-} else {
-  apiBaseUrl = 'https://server.simplytf.com/api/v1';
-}
+import store from "../store/store";
+import { setAuthSuccess, setAuthFailure, clearAuth } from "../slices/authSlice";
+
+const { VITE_APP_DOMAIN_URL, VITE_APP_API_PATH } = import.meta.env;
+
+const apiBaseUrl = VITE_APP_DOMAIN_URL + VITE_APP_API_PATH;
+const apiOrigin = new URL(apiBaseUrl).origin;
+
 axios.defaults.baseURL = apiBaseUrl;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = apiBaseUrl;
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = apiOrigin;
 
 const axiosInstance = axios.create({
   baseURL: apiBaseUrl,
@@ -67,4 +66,4 @@ export async function initializeSession() {
 // Call initializeSession when the module is loaded
 initializeSession();
 
-export { axiosInstance };
+export default axiosInstance;

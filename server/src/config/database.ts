@@ -23,7 +23,7 @@ async function initializeDatabase() {
     console.log('Connection has been established successfully.');
 
     // Drop all existing tables and start fresh
-    await sequelizeInstance.queryInterface.dropAllTables();
+    await sequelizeInstance.queryInterface.dropTable('simplycord');
     console.log('Dropped all tables');
 
     // Synchronize all models

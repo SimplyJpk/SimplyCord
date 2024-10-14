@@ -3,6 +3,9 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import fs from 'fs';
+import http from 'http';
+import { Server as WebSocketServer } from 'ws';
+import WebSocketManager from './websocket/websocketManager';
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -27,6 +30,13 @@ const apiPrefix = '/api/v1';
 dotenv.config();
 
 const app = express();
+// Websockets, move to its own file later
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+
+const websocketManager = new WebSocketManager(wss);
+
+//
 app.use(express.json());
 app.use(cors());
 
@@ -123,8 +133,9 @@ app.post(`${apiPrefix}/servers/:serverId/channels`, authenticateToken as express
   }
 });
 
-app.listen(process.env.SERVER_PORT || 3000, () => {
+server.listen(process.env.SERVER_PORT || 3000, () => {
   console.log(`Server is running on port ${process.env.SERVER_PORT || 3000}`);
 });
+
 
 export default app;

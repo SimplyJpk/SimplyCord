@@ -5,6 +5,10 @@ import type { AppDispatch } from './store/store.ts';
 import { fetchServerMessages, sendMessageToServer } from './slices/messageSlice';
 import { fetchMe } from './slices/userSlice';
 import { fetchServers } from './slices/serverSlice';
+import WebSocketClient from './network/webSocket';
+
+const { VITE_APP_WEBSOCKET_URL } = import.meta.env;
+
 import './App.css'
 // Slice
 import {
@@ -29,11 +33,12 @@ function App() {
   const servers = useSelector((state: RootState) => state.servers.servers);
   const user = useSelector((state: RootState) => state.user.user);
   const auth = useSelector((state: RootState) => state.auth);
+  const wsClient = useRef<WebSocketClient | null>(null);
 
   const currentServerId = useSelector(selectCurrentServerId);
 
   // Refs
-  const inputMessageRef = useRef<HTMLInputElement>(null);
+  const inputMessageRef = useRef<HTMLTextAreaElement>(null);
   // State
 
 
@@ -51,15 +56,33 @@ function App() {
   }, [currentServerId, dispatch]);
 
   useEffect(() => {
-    dispatch(fetchMe());
-  }, [dispatch]);
 
-  // Handlers
+    if (auth.token && auth.isAuthenticated) {
+      if (wsClient.current && wsClient.current.isConnected()) {
+        return;
+      }
+      wsClient.current = new WebSocketClient(VITE_APP_WEBSOCKET_URL, auth.token);
+      wsClient.current.connect();
+    }
+    return () => {
+      if (wsClient.current) {
+        wsClient.current = null;
+      }
+    };
+  }, [auth.token && auth.isAuthenticated]);
+
   const sendMessageHandler = (message: string) => {
     if (currentServerId) {
       dispatch(sendMessageToServer({ message, serverId: currentServerId }));
+      if (wsClient.current) {
+        wsClient.current.sendMessage(message);
+      }
     }
   };
+
+  useEffect(() => {
+    dispatch(fetchMe());
+  }, [dispatch]);
 
   const onServerSelect = (server: ServerAttributes) => {
     dispatch(setCurrentServer(server.id));
