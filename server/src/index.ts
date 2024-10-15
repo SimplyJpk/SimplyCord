@@ -42,9 +42,10 @@ const websocketManager = new WebSocketManager(wss);
 //
 app.use(express.json());
 app.use(cors({
-  origin: 'https://localhost:3001',
+  origin: process.env.SERVER_ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200,
   credentials: true
 }));
 
