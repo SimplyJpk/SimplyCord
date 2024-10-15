@@ -34,18 +34,20 @@ const baseConfig = {
 }
 
 // Development configuration
-const devConfig = {
-  server: {
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, process.env.VITE_KEY_PATH!)),
-      cert: fs.readFileSync(path.resolve(__dirname, process.env.VITE_CERT_PATH!)),
-    },
-    port: 3001,
-  },
+const devConfig = () => {
+  return {
+    server: {
+      https: {
+        key: fs.readFileSync(path.resolve(__dirname, process.env.VITE_KEY_PATH!)),
+        cert: fs.readFileSync(path.resolve(__dirname, process.env.VITE_CERT_PATH!)),
+      },
+      port: 3001,
+    }
+  }
 }
 
 // Export the final configuration
 export default defineConfig({
   ...baseConfig,
-  ...(isDev ? devConfig : {}),
+  ...(isDev ? devConfig() : {}),
 })
