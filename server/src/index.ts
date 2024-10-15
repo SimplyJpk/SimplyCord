@@ -30,7 +30,6 @@ const apiPrefix = '/api/v1';
 dotenv.config();
 
 const app = express();
-// Websockets, move to its own file later
 const server = https.createServer({
   cert: fs.readFileSync(process.env.SERVER_HTTPS_CERT!),
   key: fs.readFileSync(process.env.SERVER_HTTPS_KEY!),
