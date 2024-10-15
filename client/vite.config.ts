@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import fs from 'fs'
 import path from 'path'
 // Plugins
 import react from '@vitejs/plugin-react-swc'
@@ -10,6 +11,13 @@ export default defineConfig({
     react(),
     UnoCSS(),
   ],
+  server: {
+    https: {
+      key: fs.readFileSync(path.resolve(__dirname, process.env.VITE_KEY_PATH)),
+      cert: fs.readFileSync(path.resolve(__dirname, process.env.VITE_CERT_PATH)),
+    },
+    port: 3001,
+  },
   resolve: {
     // REMINDER! This is relative to the root of the project (Monorepo) so paths will generally start from "../client" or "../server"
     alias: {

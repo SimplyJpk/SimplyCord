@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import fs from 'fs';
-import http from 'http';
+import https from 'https';
 import { Server as WebSocketServer } from 'ws';
 import WebSocketManager from './websocket/websocketManager';
 
@@ -31,14 +31,23 @@ dotenv.config();
 
 const app = express();
 // Websockets, move to its own file later
-const server = http.createServer(app);
+const server = https.createServer({
+  cert: fs.readFileSync(process.env.SERVER_HTTPS_CERT!),
+  key: fs.readFileSync(process.env.SERVER_HTTPS_KEY!),
+}, app);
+
 const wss = new WebSocketServer({ server });
 
 const websocketManager = new WebSocketManager(wss);
 
 //
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://localhost:3001',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 app.get(`${apiPrefix}/`, (req, res) => {
   res.send('Hello World!');

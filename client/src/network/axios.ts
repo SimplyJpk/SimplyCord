@@ -5,12 +5,12 @@ import { setAuthSuccess, setAuthFailure, clearAuth } from "../slices/authSlice";
 
 const { VITE_APP_DOMAIN_URL, VITE_APP_API_PATH } = import.meta.env;
 
-const apiBaseUrl = VITE_APP_DOMAIN_URL + VITE_APP_API_PATH;
+const apiBaseUrl = `${VITE_APP_DOMAIN_URL}${VITE_APP_API_PATH}`;
 const apiOrigin = new URL(apiBaseUrl).origin;
 
 axios.defaults.baseURL = apiBaseUrl;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = apiOrigin;
+// axios.defaults.headers.common['Access-Control-Allow-Origin'] = apiOrigin;
 
 const axiosInstance = axios.create({
   baseURL: apiBaseUrl,
