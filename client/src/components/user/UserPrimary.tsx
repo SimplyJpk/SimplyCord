@@ -1,11 +1,63 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Avatar, Typography, IconButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DefaultAvatar from './../../assets/icons/profile.png';
 import { UserAttributes } from '@shared/models/user';
 import { logout } from '../../slices/authSlice';
 import { AppDispatch } from '../../store/store';
+// MUI
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+// MUI Components
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    height: 48,
+    display: 'flex',
+    flexGrow: 1,
+    backgroundColor: theme.palette.grey[900],
+    fontSize: '0.875rem',
+  },
+  container: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    padding: theme.spacing(1.5),
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    cursor: 'pointer',
+    boxShadow: theme.shadows[1],
+    transition: 'all 0.5s',
+    '&:hover': {
+      boxShadow: theme.shadows[6],
+    },
+  },
+  userInfo: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  username: {
+    color: 'white',
+  },
+  status: {
+    fontSize: '0.75rem',
+  },
+  settingsButton: {
+    marginLeft: 'auto',
+    color: 'white',
+    transition: 'all 0.5s',
+    '&:hover': {
+      transform: 'rotate(90deg) scale(1.25)',
+    },
+  },
+}));
 
 export default function UserPrimary({
   user,
@@ -13,39 +65,27 @@ export default function UserPrimary({
   user: UserAttributes;
 }) {
   const dispatch: AppDispatch = useDispatch();
+  const classes = useStyles();
 
   return (
-    <Box sx={{ height: 48, display: 'flex', flexGrow: 1, bgcolor: 'grey.900', fontSize: '0.875rem' }}>
-      <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 2, p: 1.5 }}>
+    <Box className={classes.root}>
+      <Box className={classes.container}>
         <Avatar
           src={DefaultAvatar}
           alt="user-avatar"
-          sx={{
-            width: 32,
-            height: 32,
-            cursor: 'pointer',
-            boxShadow: 1,
-            transition: 'all 0.5s',
-            '&:hover': {
-              boxShadow: 6,
-            },
-          }}
+          className={classes.avatar}
         />
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography sx={{ color: 'white' }}>{user?.username}</Typography>
-          <Typography sx={{ fontSize: '0.75rem', color: user ? 'green.500' : 'red.500' }}>
+        <Box className={classes.userInfo}>
+          <Typography className={classes.username}>{user?.username}</Typography>
+          <Typography
+            className={classes.status}
+            color={user ? 'success' : 'error'}
+          >
             {user ? 'Online' : 'Offline'}
           </Typography>
         </Box>
         <IconButton
-          sx={{
-            marginLeft: 'auto',
-            color: 'white',
-            transition: 'all 0.5s',
-            '&:hover': {
-              transform: 'rotate(90deg) scale(1.25)',
-            },
-          }}
+          className={classes.settingsButton}
           onClick={() => dispatch(logout())}
         >
           <SettingsIcon />

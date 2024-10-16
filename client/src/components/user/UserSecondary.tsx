@@ -1,56 +1,70 @@
 import React from 'react';
+import { UserAttributes } from '@shared/models/user';
+// MUI
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+// MUI Components
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { UserAttributes } from '@shared/models/user';
+// Resources
 import DefaultAvatar from '../../assets/icons/profile.png';
 
-export default function UserSecondary({ user }: { user: UserAttributes }) {
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    height: 48,
+    display: 'flex',
+    flexGrow: 1,
+    fontSize: '0.875rem',
+  },
+  container: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    padding: theme.spacing(1.5),
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    cursor: 'pointer',
+    boxShadow: theme.shadows[1],
+    transition: 'all 0.5s',
+    '&:hover': {
+      boxShadow: theme.shadows[6],
+    },
+  },
+  username: {
+    color: 'white',
+  },
+  status: {
+    fontSize: '0.75rem',
+  },
+}));
+
+export default function UserSecondary({
+  user
+}: {
+  user: UserAttributes
+}) {
+  const classes = useStyles();
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        width: '100%',
-        cursor: 'pointer',
-        '&:hover': {
-          backgroundColor: 'gray.900',
-        },
-        overflow: 'hidden',
-      }}
-    >
+    <Box className={classes.root}>
       <Avatar
         src={DefaultAvatar}
         alt="user-avatar"
-        sx={{
-          width: 24,
-          height: 24,
-          '&:hover': {
-            cursor: 'pointer',
-            boxShadow: 3,
-          },
-          transition: 'all 0.5s',
-        }}
+        className={classes.avatar}
       />
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Box className={classes.container}>
         <Typography
-          sx={{
-            color: 'white',
-            fontWeight: 'bold',
-            '&:hover': {
-              textDecoration: 'underline',
-            },
-            fontSize: '0.875rem',
-          }}
+          className={classes.username}
         >
           {user?.username}
         </Typography>
         <Typography
-          sx={{
-            fontSize: '0.75rem',
-            color: user ? 'green.500' : 'red.500',
-          }}
+          className={classes.status}
+          color={user ? 'success' : 'error'}
         >
           {user ? 'Online?' : 'Offline?'}
         </Typography>
