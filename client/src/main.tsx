@@ -13,41 +13,44 @@ import Register from './components/auth/Register';
 import ProtectedRoute from './components/layouts/redirects/ProtectedRoute';
 import LoginRoute from './components/layouts/redirects/LoginRoute';
 // Style
+import { ThemeProvider } from './theme/ThemeContext';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route
-              index
-              element={
-                <ProtectedRoute>
-                  <App />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="login"
-              element={
-                <LoginRoute>
-                  <Login />
-                </LoginRoute>
-              }
-            />
-            <Route
-              path="register"
-              element={
-                <LoginRoute>
-                  <Register />
-                </LoginRoute>
-              }
-            />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </Provider>
-  </StrictMode>,
+    <ThemeProvider>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route
+                index
+                element={
+                  <ProtectedRoute>
+                    <App />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="login"
+                element={
+                  <LoginRoute>
+                    <Login />
+                  </LoginRoute>
+                }
+              />
+              <Route
+                path="register"
+                element={
+                  <LoginRoute>
+                    <Register />
+                  </LoginRoute>
+                }
+              />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </Provider>
+    </ThemeProvider>
+  </StrictMode >,
 );
