@@ -1,20 +1,60 @@
-// SideBar that lives on the right side of the screen showing the users in the server
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-
 import { UserAttributes } from '@shared/models/user';
 // Slices
 import { selectCurrentServerId } from '../../../slices/app';
 import { fetchServerUsers, selectSelectedServersUserList } from '../../../slices/serverSlice';
 import { AppDispatch } from '../../../store/store';
-// Resources
-import DefaultAvatar from '../../../assets/icons/profile.png'
-import SettingsCog from '../../../assets/icons/ui/iconmonstr-gear-6-240.png';
 // Components
 import UserSecondary from '../../user/UserSecondary';
+// MUI
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material/styles';
+// MUI Components
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+
+const useStyles = makeStyles((theme: Theme) => ({
+  sidebar: {
+    width: '20rem',
+    height: '100vh',
+    backgroundColor: theme.palette.grey[800],
+    color: 'white',
+    position: 'relative',
+    borderRight: `1px solid ${theme.palette.grey[700]}`,
+    overflow: 'hidden',
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    height: '3rem',
+    width: '100%',
+    cursor: 'pointer',
+    '&:hover': { backgroundColor: theme.palette.grey[900] },
+  },
+  headerText: {
+    color: 'white',
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+  },
+  divider: {
+    backgroundColor: theme.palette.grey[500],
+    opacity: 0.5,
+    marginBottom: theme.spacing(1),
+  },
+  userList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+  },
+}));
 
 export default function UserSideBar() {
   const dispatch: AppDispatch = useDispatch();
+  const classes = useStyles();
 
   // Selectors
   const currentServerId = useSelector(selectCurrentServerId);
@@ -28,16 +68,18 @@ export default function UserSideBar() {
   }, [currentServerId, dispatch]);
 
   return (
-    <div className="w-80 h-screen bg-gray-800 text-white relative border-r border-gray-700 overflow-hidden">
-      <div className="flex items-center gap-2 h-12 w-full cursor-pointer hover:bg-gray-900 p-2">
-        <h2 className="text-white px-4">Users</h2>
-      </div>
-      <div className="w-full h-1 bg-gray-500 opacity-50" />
-      <div className="flex flex-col gap-2 px-2">
+    <Box className={classes.sidebar}>
+      <Box className={classes.header}>
+        <Typography variant="h6" className={classes.headerText}>
+          Users
+        </Typography>
+      </Box>
+      <Divider className={classes.divider} />
+      <Box className={classes.userList}>
         {selectedServersUserList.map((user: UserAttributes, index) => (
           <UserSecondary key={index} user={user} />
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

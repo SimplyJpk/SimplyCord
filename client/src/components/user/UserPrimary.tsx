@@ -1,10 +1,9 @@
+import React from 'react';
 import { useDispatch } from 'react-redux';
-
-import SettingsCog from './../../assets/icons/ui/iconmonstr-gear-6-240.png';
-import DefaultAvatar from './../../assets/icons/profile.png'
-
+import { Box, Avatar, Typography, IconButton } from '@mui/material';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DefaultAvatar from './../../assets/icons/profile.png';
 import { UserAttributes } from '@shared/models/user';
-
 import { logout } from '../../slices/authSlice';
 import { AppDispatch } from '../../store/store';
 
@@ -15,31 +14,43 @@ export default function UserPrimary({
 }) {
   const dispatch: AppDispatch = useDispatch();
 
-
   return (
-    <div className="h-12 flex flex-grow bg-gray-900 text-sm">
-      <div className="flex w-full items-center gap-2 p-3">
-        <img
+    <Box sx={{ height: 48, display: 'flex', flexGrow: 1, bgcolor: 'grey.900', fontSize: '0.875rem' }}>
+      <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 2, p: 1.5 }}>
+        <Avatar
           src={DefaultAvatar}
           alt="user-avatar"
-          // glow on hover
-          className="w-8 h-8 rounded-full hover:cursor-pointer hover:shadow-xl transition-all duration-500"
+          sx={{
+            width: 32,
+            height: 32,
+            cursor: 'pointer',
+            boxShadow: 1,
+            transition: 'all 0.5s',
+            '&:hover': {
+              boxShadow: 6,
+            },
+          }}
         />
-        <div className="flex flex-col">
-          <span className="text-white">{user?.username}</span>
-          <span className={`text-xs ${user ? 'text-green-500' : 'text-red-500'}`}>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography sx={{ color: 'white' }}>{user?.username}</Typography>
+          <Typography sx={{ fontSize: '0.75rem', color: user ? 'green.500' : 'red.500' }}>
             {user ? 'Online' : 'Offline'}
-          </span>
-        </div>
-        <img
-          src={SettingsCog}
-          alt="settings-cog"
-          // rotate on hover, get darker
-          className="w-6 h-6 invert ml-auto cursor-pointer hover:rotate-90 transition-all duration-500 hover:scale-125"
+          </Typography>
+        </Box>
+        <IconButton
+          sx={{
+            marginLeft: 'auto',
+            color: 'white',
+            transition: 'all 0.5s',
+            '&:hover': {
+              transform: 'rotate(90deg) scale(1.25)',
+            },
+          }}
           onClick={() => dispatch(logout())}
-        />
-      </div>
-    </div>
+        >
+          <SettingsIcon />
+        </IconButton>
+      </Box>
+    </Box>
   );
 }
-

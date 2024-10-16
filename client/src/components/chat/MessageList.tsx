@@ -5,11 +5,33 @@ import { MessageAttributes } from '@shared/models/message';
 import { RootState } from '../../store/store';
 
 import Message from './Message';
-
 import {
   selectCurrentServerId,
   selectCurrentServerChannelId
 } from '../../slices/app';
+
+// MUI
+import { makeStyles } from '@mui/styles';
+// MUI Components
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+
+const useStyles = makeStyles({
+  messageList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+    overflowY: 'auto',
+  },
+  loadingContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '2rem',
+    height: '100%',
+    width: '100%',
+  },
+});
 
 export default function MessageList({
   messages,
@@ -18,6 +40,8 @@ export default function MessageList({
   messages: MessageAttributes[];
   isLoading: boolean;
 }) {
+  const classes = useStyles();
+
   // Refs
   const messageListRef = useRef<HTMLDivElement>(null);
 
@@ -53,13 +77,18 @@ export default function MessageList({
   }, [currentServerId, currentServerChannelId]);
 
   return (
-    <div className="flex flex-col gap-1.5 overflow-y-auto" ref={messageListRef}>
-      {isLoading && <div className="flex items-center justify-center gap-2 h-full w-full">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-500" />
-      </div>}
+    <Box
+      className={classes.messageList}
+      ref={messageListRef}
+    >
+      {isLoading && (
+        <Box className={classes.loadingContainer}>
+          <CircularProgress />
+        </Box>
+      )}
       {!isLoading && messages.map((message: MessageAttributes, index) => (
         <Message key={index} message={message} />
       ))}
-    </div>
+    </Box>
   );
 }

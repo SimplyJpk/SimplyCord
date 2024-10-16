@@ -3,6 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, LoginCredentials } from '../../slices/authSlice';
 import { RootState } from '../../store/store';
 import { AppDispatch } from '../../store/store';
+// MUI Components
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+// MUI Icons
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const Login: React.FC = () => {
 
@@ -11,6 +22,7 @@ const Login: React.FC = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,50 +31,91 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen bg-gray-800">
-      <div className="flex flex-col items-center justify-center gap-2 w-full max-w-md">
-        <h2>Login</h2>
-        <span>
-          Don't have an account? <a href="/register">Register</a>
-        </span>
-        <form
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100vw',
+        height: '100vh',
+        bgcolor: 'background.default',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 2,
+          width: '100%',
+          maxWidth: '400px',
+          p: 3,
+          boxShadow: 3,
+          bgcolor: 'background.paper',
+        }}
+      >
+        <Typography variant="h4" component="h2">
+          Login
+        </Typography>
+        <Typography variant="body2">
+          Don't have an account? <Link href="/register">Register</Link>
+        </Typography>
+        <Box
+          component="form"
           onSubmit={handleSubmit}
-          className="flex flex-col gap-2"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            width: '100%',
+          }}
         >
-          <div className="flex flex-col">
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="false"
-              color='black'
-              placeholder="Email"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="false"
-              color='black'
-              placeholder="Password"
-            />
-          </div>
-          <button type="submit" disabled={authStatus === 'loading'}>
+          <TextField
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            fullWidth
+            autoComplete="off"
+          />
+          <TextField
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            fullWidth
+            autoComplete="off"
+            type={showPassword ? 'text' : 'password'}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={authStatus === 'loading'}
+            fullWidth
+          >
             {authStatus === 'loading' ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-      </div>
-    </div>
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

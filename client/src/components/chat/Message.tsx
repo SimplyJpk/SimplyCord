@@ -1,33 +1,46 @@
+import { Avatar, Box, Typography } from '@mui/material';
 import { MessageAttributes } from '@shared/models/message';
 // Utils
-import { getMessageDate } from '../../util/dateUtil'
+import { getMessageDate } from '../../util/dateUtil';
 // Resources
-import DefaultAvatar from '../../assets/icons/profile.png'
+import DefaultAvatar from '../../assets/icons/profile.png';
 
 export default function Message({ message }: { message: MessageAttributes }) {
   return (
-    <div className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm">
-      <div className="flex-shrink-0">
-        <img
-          src={message.user?.avatar ?? DefaultAvatar}
-          alt="avatar"
-          className="w-14 h-14 rounded-full"
-        />
-      </div>
-      <div className="ml-3">
-        <div className="flex items-center gap-2">
-          <span
-            className="text-gray-900 
-          font-bold hover:underline">
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        borderRadius: 1,
+        border: '1px solid',
+        borderColor: 'grey.200',
+        backgroundColor: 'white',
+        px: 2,
+        py: 1,
+      }}
+    >
+      <Avatar
+        src={message.user?.avatar ?? DefaultAvatar}
+        alt="avatar"
+        sx={{ width: 40, height: 40 }}
+      />
+      <Box sx={{ ml: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography
+            sx={{
+              color: 'grey.900',
+              fontWeight: 'bold',
+              '&:hover': { textDecoration: 'underline' },
+            }}
+          >
             {message.user?.username ?? message.userId}
-          </span>
-          <span
-            className="text-gray-500">
+          </Typography>
+          <Typography sx={{ color: 'grey.500' }}>
             {message.createdAt ? getMessageDate(message.createdAt) : ''}
-          </span>
-        </div>
-        <p className="text-gray-900">{message.message}</p>
-      </div>
-    </div>
+          </Typography>
+        </Box>
+        <Typography sx={{ color: 'grey.900' }}>{message.message}</Typography>
+      </Box>
+    </Box>
   );
 }

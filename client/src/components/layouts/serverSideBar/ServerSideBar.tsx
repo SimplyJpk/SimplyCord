@@ -6,9 +6,69 @@ import { ServerChannelAttributes } from '@shared/models/serverChannel';
 import { UserAttributes } from '@shared/models/user';
 
 import { AppDispatch } from '../../../store/store';
+// MUI 
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material/styles';
+// MUI Components
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
 
 // Components
 import UserPrimary from '../../user/UserPrimary';
+
+const useStyles = makeStyles((theme: Theme) => ({
+  sidebar: {
+    width: '20rem',
+    height: '100vh',
+    backgroundColor: theme.palette.grey[800],
+    color: 'white',
+    position: 'relative',
+    borderRight: `1px solid ${theme.palette.grey[700]}`,
+    overflow: 'hidden',
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    height: '3rem',
+    width: '100%',
+    cursor: 'pointer',
+    '&:hover': { backgroundColor: theme.palette.grey[900] },
+  },
+  headerText: {
+    color: 'white',
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+  },
+  divider: {
+    backgroundColor: theme.palette.grey[500],
+    opacity: 0.5,
+  },
+  channelList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+  },
+  channelItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    height: '3rem',
+    width: '100%',
+    cursor: 'pointer',
+    '&:hover': { backgroundColor: theme.palette.grey[900] },
+    padding: theme.spacing(2),
+  },
+  footer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    bottom: 0,
+  },
+}));
 
 export default function ServerSideBar({
   server,
@@ -18,31 +78,29 @@ export default function ServerSideBar({
   user: UserAttributes;
 }) {
   const dispatch: AppDispatch = useDispatch();
+  const classes = useStyles();
 
   return (
-    <div className="w-80 h-screen bg-gray-800 text-white relative border-r border-gray-700 overflow-hidden">
-      <div className="flex items-center gap-2 h-12 w-full cursor-pointer hover:bg-gray-900 p-2">
-        <h2 className="text-white px-4">{server?.name}</h2>
-      </div>
-      <div className="w-full h-1 bg-gray-500 opacity-50" />
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2 h-12 w-full cursor-pointer hover:bg-gray-900 p-2">
-          <h2 className="text-white px-4">Channels</h2>
-        </div>
-        <div className="flex flex-col gap-2 p-2">
+    <Box className={classes.sidebar}>
+      <Box className={classes.header}>
+        <Typography className={classes.headerText}>{server?.name}</Typography>
+      </Box>
+      <Divider className={classes.divider} />
+      <Box className={classes.channelList}>
+        <Box className={classes.header}>
+          <Typography className={classes.headerText}>Channels</Typography>
+        </Box>
+        <Box className={classes.channelList}>
           {server?.channels?.map((channel: ServerChannelAttributes, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 h-12 w-full cursor-pointer hover:bg-gray-900 p-2"
-            >
-              <h2 className="text-white px-4">{channel.name}</h2>
-            </div>
+            <Box key={index} className={classes.channelItem}>
+              <Typography className={classes.headerText}>{channel.name}</Typography>
+            </Box>
           ))}
-        </div>
-      </div>
-      <div className="w-full flex flex-col absolute bottom-0">
+        </Box>
+      </Box>
+      <Box className={classes.footer}>
         <UserPrimary user={user} />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

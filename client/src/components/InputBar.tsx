@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
-// Resources
-import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+// MUI 
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material/styles';
+// MUI Components
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 // Validation
 import * as yup from 'yup';
 
@@ -8,6 +15,51 @@ import * as yup from 'yup';
 const messageSchema = yup.object().shape({
   message: yup.string().max(200).min(2).required(),
 });
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    backgroundColor: theme.palette.grey[900],
+    color: 'white',
+    padding: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: theme.spacing(2),
+    width: '100%',
+  },
+  iconButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textField: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.grey[800],
+    borderRadius: theme.shape.borderRadius,
+    '& .MuiOutlinedInput-root': {
+      color: 'white',
+    },
+  },
+  charCount: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    color: theme.palette.grey[400],
+    fontSize: '0.75rem',
+    padding: theme.spacing(1),
+  },
+  submitButton: {
+    fontWeight: 'bold',
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.primary.main,
+    '&:disabled': {
+      backgroundColor: theme.palette.grey[500],
+    },
+  },
+}));
 
 interface InputBarProps {
   onSubmit: (message: string) => void;
@@ -20,9 +72,10 @@ const InputBar: React.FC<InputBarProps> = ({
   inputRef,
   disabled,
 }) => {
-  const [input, setInput] = useState('')
-  const [isValid, setIsValid] = useState(false);
+  const classes = useStyles();
 
+  const [input, setInput] = useState('');
+  const [isValid, setIsValid] = useState(false);
   const [isShiftHeld, setIsShiftHeld] = useState(false);
 
   // TODO: (James) Move to config/state, something more flexible
@@ -30,9 +83,9 @@ const InputBar: React.FC<InputBarProps> = ({
 
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.focus()
+      inputRef.current.focus();
     }
-  }, [inputRef])
+  }, [inputRef]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (event.target.value.endsWith('\n') && !isShiftHeld) {
@@ -44,17 +97,15 @@ const InputBar: React.FC<InputBarProps> = ({
     }
 
     setInput(event.target.value);
-    // messageSchema is yup
     const isStillValid = messageSchema.isValidSync({ message: event.target.value });
     setIsValid(isStillValid);
-  }
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const inputElement = (event.target as HTMLFormElement).elements.namedItem('message') as HTMLTextAreaElement
+    const inputElement = (event.target as HTMLFormElement).elements.namedItem('message') as HTMLTextAreaElement;
 
-    // strip off all newlines from end of input
     const inputWithoutNewlines = input.replace(/\n+$/, '');
     if (inputWithoutNewlines.length === 0) {
       return;
@@ -67,18 +118,17 @@ const InputBar: React.FC<InputBarProps> = ({
       return;
     }
 
-    onSubmit(input)
+    onSubmit(input);
     setIsValid(false);
-
-    setInput('')
-    inputElement.value = ''
-  }
+    setInput('');
+    inputElement.value = '';
+  };
 
   return (
-    <div className="bg-gray-5 text-white p-2 rounded-lg">
+    <Box className={classes.root}>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-row gap-2 w-full"
+        className={classes.form}
         onKeyDown={(event) => {
           if (event.key === 'Shift') {
             setIsShiftHeld(true);
@@ -90,39 +140,46 @@ const InputBar: React.FC<InputBarProps> = ({
           }
         }}
       >
-        <div className="flex-grow flex justify-center items-center">
-          <img src={PlusCircle}
-            alt="plus-circle-lined"
-            className="w-10 h-10 rounded-full bg-gray-5 align-middle cursor-pointer hover:bg-gray-6"
-          />
-        </div>
-        <textarea
-          ref={inputRef}
+        <Box className={classes.iconButton}>
+          <IconButton>
+            <AddCircleOutlineIcon sx={{ fontSize: 40, color: 'grey.500', '&:hover': { color: 'grey.600' } }} />
+          </IconButton>
+        </Box>
+        <TextField
+          inputRef={inputRef}
           name="message"
           value={input}
           onChange={handleInputChange}
-          className="rounded-lg text-white bg-gray-800 p-2 w-full resize-none h-7"
+          variant="outlined"
+          multiline
+          maxRows={3}
           placeholder="Type your message here..."
           disabled={disabled}
           autoComplete="off"
           autoCorrect="off"
-          maxLength={maxLength}
-          minLength={1}
+          slotProps={{
+            htmlInput: {
+              maxLength,
+              minLength: 1
+            }
+          }}
+          className={classes.textField}
         />
-        <div className="absolute bottom-0 right-0 text-gray-400 text-xs p-1">
+        <Box className={classes.charCount}>
           {maxLength - input.length} characters left
-        </div>
-        <button
+        </Box>
+        <Button
           type="submit"
-          // color red if invalid
-          className="hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg bg-blue-500 disabled:bg-gray-500"
+          variant="contained"
+          color="primary"
           disabled={disabled || !isValid}
+          className={classes.submitButton}
         >
           Send
-        </button>
+        </Button>
       </form>
-    </div>
-  )
-}
+    </Box>
+  );
+};
 
-export default InputBar
+export default InputBar;

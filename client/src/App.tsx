@@ -8,7 +8,13 @@ import { fetchServers } from './slices/serverSlice';
 import WebSocketClient from './network/webSocket';
 
 const { VITE_APP_WEBSOCKET_URL } = import.meta.env;
-
+// MUI Components
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Container from '@mui/material/Container';
+// Style
+import { makeStyles } from '@mui/styles';
 import './App.css'
 // Slice
 import {
@@ -24,9 +30,57 @@ import UserSideBar from './components/layouts/serverSideBar/UserSideBar';
 
 import { ServerAttributes } from '@shared/models/server';
 
+const useStyles = makeStyles({
+  appContainer: {
+    display: 'flex',
+    width: '100vw',
+    height: '100vh',
+  },
+  mainContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    height: '100%',
+  },
+  messageContainer: {
+    flexGrow: 1,
+    width: '100%',
+    overflow: 'auto',
+    backgroundColor: 'background.default',
+  },
+  messageInnerContainer: {
+    padding: '8px',
+    color: 'text.primary',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+  },
+  selectServerPaper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '16px',
+    borderRadius: '4px',
+    border: '1px solid',
+    borderColor: 'grey.200',
+    backgroundColor: 'background.paper',
+    height: '64px',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: 'grey.200',
+    },
+    width: '100%',
+  },
+  selectServerText: {
+    color: 'text.primary',
+  },
+});
+
 function App() {
   // Dispatch
   const dispatch: AppDispatch = useDispatch();
+  const classes = useStyles();
+
   // Selectors
   const messages = useSelector((state: RootState) => state.messages.messages);
   const messageStatus = useSelector((state: RootState) => state.messages.status);
@@ -40,7 +94,6 @@ function App() {
   // Refs
   const inputMessageRef = useRef<HTMLTextAreaElement>(null);
   // State
-
 
   useEffect(() => {
     dispatch(fetchServers());
@@ -89,18 +142,18 @@ function App() {
   };
 
   return (
-    <div className="flex w-screen h-screen">
+    <Box className={classes.appContainer}>
       <ServerList onServerSelect={onServerSelect} />
       <ServerSideBar server={servers.find((server) => server.id === currentServerId)} user={user} />
-      <div className="flex flex-col w-full h-full">
-        <div className="flex-grow w-full overflow-auto bg-blueGray-800">
-          <div className="p-2 text-white flex flex-col gap-1">
+      <Box className={classes.mainContent}>
+        <Box className={classes.messageContainer}>
+          <Box className={classes.messageInnerContainer}>
             {!currentServerId && (
-              <div className="flex items-center justify-center gap-2 rounded-md border border-gray-200 bg-white text-sm h-16 w-16 cursor-pointer hover:bg-gray-200 w-full">
-                <p className="text-black">
+              <Paper className={classes.selectServerPaper}>
+                <Typography className={classes.selectServerText}>
                   Select a server
-                </p>
-              </div>
+                </Typography>
+              </Paper>
             )}
             {currentServerId && (
               <MessageList
@@ -108,17 +161,17 @@ function App() {
                 isLoading={false} // TODO: (James) Add loading state that is aware of server changes, don't isLoading if only message loading
               />
             )}
-          </div>
-        </div>
+          </Box>
+        </Box>
         <InputBar
           onSubmit={sendMessageHandler}
           inputRef={inputMessageRef}
           disabled={!currentServerId}
         />
-      </div>
+      </Box>
       <UserSideBar />
-    </div>
-  )
+    </Box>
+  );
 }
 
 export default App

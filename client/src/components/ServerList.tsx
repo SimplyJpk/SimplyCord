@@ -1,10 +1,14 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-
+// MUI Components
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+// Models
 import { ServerAttributes } from '@shared/models/server';
-
-import DefaultAvatar from '../assets/icons/profile.png'
-import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png'
+// Resources
+import DefaultAvatar from '../assets/icons/profile.png';
+import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png';
 
 export default function ServerList({
   onServerSelect,
@@ -12,32 +16,94 @@ export default function ServerList({
   const servers = useSelector((state: RootState) => state.servers.servers);
 
   return (
-    <div className="w-20 h-screen bg-gray-900 text-white relative">
-      <div className="flex flex-col p-2 gap-2 overflow-y-auto flex-justify-end">
+    <Box
+      sx={{
+        width: '5rem',
+        height: '100vh',
+        backgroundColor: 'gray.900',
+        color: 'white',
+        position: 'relative',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '0.5rem',
+          gap: '0.5rem',
+          overflowY: 'auto',
+          justifyContent: 'flex-end',
+        }}
+      >
         {servers.map((server: ServerAttributes, index) => (
-          <div
+          <Box
             key={index}
             onClick={() => onServerSelect(servers[index])}
-            className="flex items-center justify-center gap-2 rounded-md border bg-white text-sm h-16 w-16 cursor-pointer hover:bg-gray-200"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              borderRadius: '0.375rem',
+              border: '1px solid',
+              backgroundColor: 'white',
+              fontSize: '0.875rem',
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: 'gray.200',
+              },
+              position: 'relative',
+            }}
           >
-            <img
+            <Avatar
               src={server.icon || DefaultAvatar}
               alt="avatar"
-              className="w-14 h-14 rounded-full"
+              sx={{ width: '3.5rem', height: '3.5rem' }}
             />
-            <p className="text-black absolute">
+            <Typography
+              sx={{
+                color: 'black',
+                position: 'absolute',
+              }}
+            >
               {server.name}
-            </p>
-          </div>
+            </Typography>
+          </Box>
         ))}
-        <div className="flex items-center justify-center rounded-md border text-sm h-16 w-16 cursor-pointer hover:bg-gray-200 absolute bottom-2 right-2">
-          <img
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '0.375rem',
+            border: '1px solid',
+            fontSize: '0.875rem',
+            height: '4rem',
+            width: '4rem',
+            cursor: 'pointer',
+            '&:hover': {
+              backgroundColor: 'gray.200',
+            },
+            position: 'absolute',
+            bottom: '0.5rem',
+            right: '0.5rem',
+          }}
+        >
+          <Avatar
             src={PlusCircle}
             alt="plus-circle"
-            className="w-14 h-14 rounded-full bg-gray-5 align-middle cursor-pointer hover:bg-gray-6"
+            sx={{
+              width: '3.5rem',
+              height: '3.5rem',
+              backgroundColor: 'gray.50',
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: 'gray.600',
+              },
+            }}
           />
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }

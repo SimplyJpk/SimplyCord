@@ -1,25 +1,60 @@
-// Secondary user component, which is passed a User model from the store
+import React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { UserAttributes } from '@shared/models/user';
-// Resources
-import DefaultAvatar from '../../assets/icons/profile.png'
+import DefaultAvatar from '../../assets/icons/profile.png';
 
 export default function UserSecondary({ user }: { user: UserAttributes }) {
   return (
-    <div
-      className="flex items-center gap-2 w-full cursor-pointer hover:bg-gray-900 overflow-hidden"
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        width: '100%',
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: 'gray.900',
+        },
+        overflow: 'hidden',
+      }}
     >
-      <img
+      <Avatar
         src={DefaultAvatar}
         alt="user-avatar"
-        className="w-6 h-6 rounded-full hover:cursor-pointer hover:shadow-xl transition-all duration-500 flex-content-center"
+        sx={{
+          width: 24,
+          height: 24,
+          '&:hover': {
+            cursor: 'pointer',
+            boxShadow: 3,
+          },
+          transition: 'all 0.5s',
+        }}
       />
-      <div className="flex flex-col">
-        <span className="text-white font-bold hover:underline text-sm">
-          {user?.username}</span>
-        <span className={`text-xs ${user ? 'text-green-500' : 'text-red-500'}`}>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Typography
+          sx={{
+            color: 'white',
+            fontWeight: 'bold',
+            '&:hover': {
+              textDecoration: 'underline',
+            },
+            fontSize: '0.875rem',
+          }}
+        >
+          {user?.username}
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: '0.75rem',
+            color: user ? 'green.500' : 'red.500',
+          }}
+        >
           {user ? 'Online?' : 'Offline?'}
-        </span>
-      </div>
-    </div>
+        </Typography>
+      </Box>
+    </Box>
   );
 }
