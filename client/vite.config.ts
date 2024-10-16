@@ -4,7 +4,6 @@ import path from 'path'
 import dotenv from 'dotenv'
 // Plugins
 import react from '@vitejs/plugin-react-swc'
-import UnoCSS from 'unocss/vite'
 
 // Load environment variables from .env file
 dotenv.config()
@@ -16,7 +15,6 @@ const isDev = process.env.NODE_ENV === 'development'
 const baseConfig = {
   plugins: [
     react(),
-    UnoCSS(),
   ],
   resolve: {
     // REMINDER! This is relative to the root of the project (Monorepo) so paths will generally start from "../client" or "../server"

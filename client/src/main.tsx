@@ -13,7 +13,6 @@ import Register from './components/auth/Register';
 import ProtectedRoute from './components/layouts/redirects/ProtectedRoute';
 import LoginRoute from './components/layouts/redirects/LoginRoute';
 // Style
-import 'virtual:uno.css';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
