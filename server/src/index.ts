@@ -3,8 +3,8 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import fs from 'fs';
-import https from 'https';
-import { Server as WebSocketServer } from 'ws';
+import http from 'http';
+import WebSocket from 'ws';
 import WebSocketManager from './websocket/websocketManager';
 
 import bcrypt from 'bcrypt';
@@ -30,12 +30,12 @@ const apiPrefix = '/api/v1';
 dotenv.config();
 
 const app = express();
-const server = https.createServer({
-  cert: fs.readFileSync(process.env.SERVER_HTTPS_CERT!),
-  key: fs.readFileSync(process.env.SERVER_HTTPS_KEY!),
-}, app);
+const server = http.createServer(app);
+// cert: fs.readFileSync(process.env.SERVER_HTTPS_CERT!),
+// key: fs.readFileSync(process.env.SERVER_HTTPS_KEY!),
+// }, app);
 
-const wss = new WebSocketServer({ server });
+const wss = new WebSocket.Server({ server });
 
 const websocketManager = new WebSocketManager(wss);
 
