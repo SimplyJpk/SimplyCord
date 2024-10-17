@@ -10,12 +10,16 @@ import Typography from '@mui/material/Typography';
 // Resources
 import DefaultAvatar from '../../assets/icons/profile.png';
 
+// TODO: (James) Virtualize this component so it won't lag when there are a lot of users
+
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     height: 48,
     display: 'flex',
     flexGrow: 1,
     fontSize: '0.875rem',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   container: {
     display: 'flex',
@@ -39,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   status: {
     fontSize: '0.75rem',
+    marginLeft: 'auto',
   },
 }));
 

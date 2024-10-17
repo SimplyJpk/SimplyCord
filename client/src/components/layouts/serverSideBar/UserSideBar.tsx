@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useMemo } from 'react';
 import { UserAttributes } from '@shared/models/user';
 // Slices
 import { selectCurrentServerId } from '../../../slices/app';
@@ -16,6 +16,8 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 // Hooks
 import { useWebSocket } from '../../../hooks/useWebSocket';
+// Utility
+import isEqual from 'lodash/isEqual';
 
 const useStyles = makeStyles((theme: Theme) => ({
   sidebar: {
@@ -48,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   userList: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(1),
+    gap: theme.spacing(0.5),
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
   },
@@ -72,8 +74,7 @@ export default function UserSideBar() {
     }
   }, [currentServerId, dispatch]);
 
-  // Callback (when onlineUsers or currentServerId changes)
-  const getCurrentUserList = useCallback(() => {
+  const getCurrentUserList = useMemo(() => {
     const currentUserList = selectedServersUserList.map((user) => {
       const isOnline = onlineUsers.includes(user.id);
       return { ...user, isOnline };
@@ -90,7 +91,7 @@ export default function UserSideBar() {
       </Box>
       <Divider className={classes.divider} />
       <Box className={classes.userList}>
-        {getCurrentUserList().map((user: UserAttributes, index) => (
+        {getCurrentUserList.map((user: UserAttributes, index) => (
           <UserSecondary key={index} user={user} />
         ))}
       </Box>
