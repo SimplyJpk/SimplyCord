@@ -18,6 +18,25 @@ class WebSocketManager {
     this.wss = server;
     this.setupConnection();
     this.setupHeartbeat();
+    this.setupOnlineClients();
+  }
+
+  public getOnlineClients() {
+    return Array.from(this.clients.values()).map((client) => client.userId);
+  }
+
+  private setupOnlineClients() {
+    setInterval(() => {
+      const onlineClients = this.getOnlineClients();
+      this.broadcast(JSON.stringify(
+        {
+          type: 'onlineStatus',
+          data: {
+            userIds: onlineClients,
+          }
+        }
+      ), '');
+    }, 5000);
   }
 
   private setupConnection() {
@@ -82,6 +101,7 @@ class WebSocketManager {
           }
           return;
         }
+
         console.log(`Received message from ${clientId} => ${messageStr}`);
         this.broadcast(messageStr, clientId);
       });

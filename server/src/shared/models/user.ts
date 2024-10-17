@@ -11,4 +11,5 @@ export interface UserAttributes {
   createdAt?: Date;
   // updatedAt?: Date;
   // deletedAt?: Date;
+  isOnline?: boolean;
 }

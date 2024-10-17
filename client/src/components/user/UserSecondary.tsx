@@ -43,9 +43,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export default function UserSecondary({
-  user
+  user,
 }: {
-  user: UserAttributes
+  user: UserAttributes,
 }) {
   const classes = useStyles();
 
@@ -64,9 +64,9 @@ export default function UserSecondary({
         </Typography>
         <Typography
           className={classes.status}
-          color={user ? 'success' : 'error'}
+          color={user?.isOnline ? 'success' : 'error'}
         >
-          {user ? 'Online?' : 'Offline?'}
+          {user?.isOnline ? 'Online' : 'Offline'}
         </Typography>
       </Box>
     </Box>

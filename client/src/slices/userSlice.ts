@@ -8,12 +8,14 @@ interface UserState {
   user: UserAttributes | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+  onlineUsers: string[];
 }
 
 const initialState: UserState = {
   user: null,
   status: 'idle',
   error: null,
+  onlineUsers: [],
 };
 
 export const fetchMe = createAsyncThunk('user/me', async () => {
@@ -24,7 +26,11 @@ export const fetchMe = createAsyncThunk('user/me', async () => {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setOnlineUsers: (state, action) => {
+      state.onlineUsers = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchMe.pending, (state) => {
@@ -40,6 +46,8 @@ const userSlice = createSlice({
       });
   },
 });
+
+export const { setOnlineUsers } = userSlice.actions;
 
 export default userSlice.reducer;
 

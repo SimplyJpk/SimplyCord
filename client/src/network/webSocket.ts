@@ -1,3 +1,5 @@
+type EventCallback = (data: any) => void;
+
 class WebSocketClient {
   private ws: WebSocket | null = null;
   private heartbeatInterval: NodeJS.Timeout | null = null;
@@ -5,6 +7,12 @@ class WebSocketClient {
   constructor(private url: string, private token: string) { }
 
   public connect() {
+    if (this.isConnected()) {
+      console.log('WebSocket is already connected');
+      return;
+    }
+
+    console.log('Connecting to WebSocket...');
     this.ws = new WebSocket(`${this.url}?token=${this.token}`);
 
     this.ws.onopen = () => {
@@ -15,7 +23,6 @@ class WebSocketClient {
     this.ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       console.log('Received message:', message);
-      // TODO: (James) Handle Events
     };
 
     this.ws.onerror = (error) => {
@@ -32,7 +39,7 @@ class WebSocketClient {
       // Optionally, try to reconnect
       setTimeout(() => {
         this.connect();
-      }, 5000); // 5 Seconds, Configur
+      }, 5000); // 5 Seconds, Configurable
     };
   }
 
@@ -43,6 +50,26 @@ class WebSocketClient {
   public sendMessage(message: string) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify({ message, token: this.token }));
+    }
+  }
+
+  public disconnect() {
+    if (this.ws) {
+      this.ws.close(1000, 'Client disconnect'); // 1000 indicates a normal closure
+      this.ws = null;
+      this.stopHeartbeat();
+    }
+  }
+
+  public on(event: string, callback: EventCallback) {
+    if (this.ws) {
+      this.ws.addEventListener(event, (e: MessageEvent) => callback(JSON.parse(e.data)));
+    }
+  }
+
+  public off(event: string) {
+    if (this.ws) {
+      this.ws.removeEventListener(event, () => { });
     }
   }
 

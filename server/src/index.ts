@@ -31,13 +31,11 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-// cert: fs.readFileSync(process.env.SERVER_HTTPS_CERT!),
-// key: fs.readFileSync(process.env.SERVER_HTTPS_KEY!),
-// }, app);
 
 const wss = new WebSocket.Server({ server });
 
 const websocketManager = new WebSocketManager(wss);
+export { websocketManager };
 
 //
 app.use(express.json());

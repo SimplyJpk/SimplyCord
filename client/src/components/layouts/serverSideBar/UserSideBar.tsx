@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { UserAttributes } from '@shared/models/user';
 // Slices
 import { selectCurrentServerId } from '../../../slices/app';
@@ -14,6 +14,8 @@ import { Theme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+// Hooks
+import { useWebSocket } from '../../../hooks/useWebSocket';
 
 const useStyles = makeStyles((theme: Theme) => ({
   sidebar: {
@@ -56,6 +58,9 @@ export default function UserSideBar() {
   const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
 
+  // Providers
+  const { onlineUsers } = useWebSocket();
+
   // Selectors
   const currentServerId = useSelector(selectCurrentServerId);
   const selectedServersUserList = useSelector(selectSelectedServersUserList);
@@ -67,6 +72,15 @@ export default function UserSideBar() {
     }
   }, [currentServerId, dispatch]);
 
+  // Callback (when onlineUsers or currentServerId changes)
+  const getCurrentUserList = useCallback(() => {
+    const currentUserList = selectedServersUserList.map((user) => {
+      const isOnline = onlineUsers.includes(user.id);
+      return { ...user, isOnline };
+    });
+    return currentUserList;
+  }, [selectedServersUserList, onlineUsers]);
+
   return (
     <Box className={classes.sidebar}>
       <Box className={classes.header}>
@@ -76,7 +90,7 @@ export default function UserSideBar() {
       </Box>
       <Divider className={classes.divider} />
       <Box className={classes.userList}>
-        {selectedServersUserList.map((user: UserAttributes, index) => (
+        {getCurrentUserList().map((user: UserAttributes, index) => (
           <UserSecondary key={index} user={user} />
         ))}
       </Box>

@@ -2,6 +2,8 @@
 import { Request, Response } from 'express';
 import { Server, User } from '@orm/models';
 
+import { websocketManager } from 'index';
+
 export async function getServers(req: Request, res: Response) {
   try {
     const servers = await Server.findAll();
@@ -32,6 +34,7 @@ export async function getServerUsers(req: Request, res: Response) {
         email: user.email,
       };
     });
+
     res.json(sanitizedUsers);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });

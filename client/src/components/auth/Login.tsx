@@ -79,7 +79,6 @@ const Login: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             fullWidth
-            autoComplete="off"
           />
           <TextField
             label="Password"
@@ -87,7 +86,6 @@ const Login: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
             fullWidth
-            autoComplete="off"
             type={showPassword ? 'text' : 'password'}
             slotProps={{
               input: {
