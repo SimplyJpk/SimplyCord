@@ -24,8 +24,19 @@ export default function Message({ message }: { message: MessageAttributes }) {
         alt="avatar"
         sx={{ width: 40, height: 40 }}
       />
-      <Box sx={{ ml: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box
+        sx={{
+          ml: 2,
+          width: '100%',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
           <Typography
             sx={{
               color: 'grey.900',
@@ -39,7 +50,9 @@ export default function Message({ message }: { message: MessageAttributes }) {
             {message.createdAt ? getMessageDate(message.createdAt) : ''}
           </Typography>
         </Box>
-        <Typography sx={{ color: 'grey.900' }}>{message.message}</Typography>
+        <Typography sx={{ color: 'grey.900', whiteSpace: 'pre-line' }}>
+          {message.message}
+        </Typography>
       </Box>
     </Box>
   );
