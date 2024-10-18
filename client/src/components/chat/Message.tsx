@@ -1,11 +1,15 @@
-import { Avatar, Box, Typography } from '@mui/material';
+import React from 'react';
+// MUI Components
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { MessageAttributes } from '@shared/models/message';
 // Utils
 import { getMessageDate } from '../../util/dateUtil';
 // Resources
 import DefaultAvatar from '../../assets/icons/profile.png';
 
-export default function Message({ message }: { message: MessageAttributes }) {
+export function Message({ message }: { message: MessageAttributes }) {
   return (
     <Box
       sx={{
@@ -57,3 +61,5 @@ export default function Message({ message }: { message: MessageAttributes }) {
     </Box>
   );
 }
+
+export default React.memo(Message);
