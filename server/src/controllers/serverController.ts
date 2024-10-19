@@ -2,6 +2,7 @@ import { fn, col, literal } from '@sequelize/core';
 // Server Controller
 import { Request, Response } from 'express';
 import { Server, User, ServerUsers } from '@orm/models';
+import { ServerAttributes } from '@shared/models/server';
 
 import { websocketManager } from 'index';
 
@@ -15,26 +16,17 @@ export async function getPublicServers(req: Request, res: Response) {
         'iconUrl',
         'bannerUrl',
         'createdAt',
-        [
-          literal(`(
-            SELECT COUNT(*)
-            FROM \`ServerUsers\` AS \`su\`
-            WHERE \`su\`.\`serverId\` = \`Server\`.\`id\`
-          )`),
-          'memberCount'
-        ]
       ],
-      include: [
-        {
-          model: ServerUsers,
-          attributes: [],
-          required: false
-        }
-      ],
-      group: ['Server.id'],
     });
 
-    res.json(servers);
+    // TODO: (James) Optimise this? Better yet, Redis cache this
+    let serverInfo: ServerAttributes[] = [];
+    for (const server of servers) {
+      const memberCount = await ServerUsers.count({ where: { serverId: server.id } });
+      serverInfo.push({ ...server.dataValues, memberCount });
+    }
+
+    res.json(serverInfo);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
