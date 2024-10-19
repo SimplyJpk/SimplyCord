@@ -10,4 +10,12 @@ export interface ServerUsersAttributes {
     id: number;
     username: string;
   };
+  server?: {
+    id: number;
+    name: string;
+    description: string;
+    iconUrl: string;
+    bannerUrl: string;
+    createdAt?: Date;
+  }
 }

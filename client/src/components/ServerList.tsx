@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 // Slice
 import { selectUserServers } from '../slices/userSlice';
 // Models
-import { ServerAttributes } from '@shared/models/server';
+import { ServerUsersAttributes } from '@shared/models/server';
 // Resources
 import DefaultAvatar from '../assets/icons/profile.png';
 import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png';
@@ -91,14 +91,14 @@ export default function ServerList({
   return (
     <Box className={classes.serverListContainer}>
       <Box className={classes.serverList}>
-        {servers.map((server: ServerAttributes, index) => (
+        {servers.map((server: ServerUsersAttributes, index) => (
           <Box
             key={index}
             onClick={() => onServerSelect(servers[index])}
             className={classes.serverItem}
           >
             <Avatar
-              src={server.icon || DefaultAvatar}
+              src={server.server?.iconUrl || DefaultAvatar}
               alt="avatar"
               className={classes.avatar}
             />
@@ -108,7 +108,7 @@ export default function ServerList({
                 position: 'absolute',
               }}
             >
-              {server.name}
+              {server.server?.name}
             </Typography>
           </Box>
         ))}

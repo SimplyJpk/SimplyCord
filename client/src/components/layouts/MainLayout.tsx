@@ -19,7 +19,7 @@ import {
   fetchServerUsers,
 } from '../../slices/serverSlice';
 // 
-import { ServerAttributes } from '@shared/models/server';
+import { ServerUsersAttributes } from '@shared/models/server';
 import { WebSocketProvider } from '../../context/WebSocketContext';
 const { VITE_APP_WEBSOCKET_URL } = import.meta.env;
 // App Components
@@ -43,9 +43,9 @@ const MainLayout: React.FC = () => {
   const auth = useSelector((state: RootState) => state.auth);
 
   // Handlers
-  const onServerSelect = (server: ServerAttributes) => {
-    navigate(`/servers/${server.id}`);
-    dispatch(setCurrentServer(server.id));
+  const onServerSelect = (server: ServerUsersAttributes) => {
+    navigate(`/servers/${server.serverId}`);
+    dispatch(setCurrentServer(server.serverId));
   };
 
   // Effects

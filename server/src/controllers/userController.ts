@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import { User } from "@orm/models";
-import { ServerUsers } from "@orm/models";
+import { ServerUsers, Server } from "@orm/models";
 
 import { UserAttributes } from '@shared/models/user';
 import { ServerUsersAttributes } from '@shared/models/serverUsers';
@@ -95,6 +95,14 @@ export async function getUser(req: Request, res: Response) {
             model: ServerUsers,
             as: 'serverUsers',
             attributes: ['id', 'serverId', 'userId', 'joinDate'],
+            include: [
+              {
+                model: Server,
+                as: 'server',
+                attributes: ['id', 'name', 'description', 'iconUrl', 'bannerUrl', 'createdAt'],
+                required: false
+              }
+            ]
           },
         ],
       });
