@@ -15,6 +15,11 @@ const sequelizeInstance = new Sequelize({
   password: process.env.DB_PASSWORD!,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : undefined,
+  benchmark: true,
+  logging: (sql, timing) => {
+    const message = `Executing (ms): ${timing}, SQL: ${sql}`;
+    console.log(message);
+  },
 });
 
 async function initializeDatabase() {
