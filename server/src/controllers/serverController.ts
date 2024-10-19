@@ -1,5 +1,4 @@
-import { fn, col } from '@sequelize/core';
-
+import { fn, col, literal } from '@sequelize/core';
 // Server Controller
 import { Request, Response } from 'express';
 import { Server, User, ServerUsers } from '@orm/models';
@@ -16,7 +15,7 @@ export async function getPublicServers(req: Request, res: Response) {
         'iconUrl',
         'bannerUrl',
         'createdAt',
-        [fn('COUNT', col('ServerUsers.id')), 'memberCount']
+        [fn('COALESCE', fn('COUNT', col('ServerUsers.serverId')), 0), 'memberCount']
       ],
       include: [
         {
@@ -65,6 +64,12 @@ export async function getServerUsers(req: Request, res: Response) {
 export async function joinServer(req: Request, res: Response) {
   try {
     const { serverId } = req.params;
+    if (!req.user) {
+      return res.status(401).json({ error: 'Invalid user' });
+    }
+    if (!serverId) {
+      return res.status(400).json({ error: 'Invalid server' });
+    }
     // Find User
     const user = await User.findOne({ where: { id: req.user?.id } });
     if (!user) {
