@@ -15,7 +15,14 @@ export async function getPublicServers(req: Request, res: Response) {
         'iconUrl',
         'bannerUrl',
         'createdAt',
-        [fn('COALESCE', fn('COUNT', col('ServerUsers.id')), 0), 'memberCount']
+        [
+          literal(`(
+            SELECT COUNT(*)
+            FROM \`ServerUsers\` AS \`su\`
+            WHERE \`su\`.\`serverId\` = \`Server\`.\`id\`
+          )`),
+          'memberCount'
+        ]
       ],
       include: [
         {
@@ -24,7 +31,7 @@ export async function getPublicServers(req: Request, res: Response) {
           required: false
         }
       ],
-      group: ['Server.id', 'Server.name', 'Server.description', 'Server.iconUrl', 'Server.bannerUrl', 'Server.createdAt'],
+      group: ['Server.id'],
     });
 
     res.json(servers);
