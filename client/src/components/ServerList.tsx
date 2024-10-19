@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 // MUI
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
@@ -83,6 +83,7 @@ export default function ServerList({
 }) {
   const classes = useStyles();
   const navigate = useNavigate();
+  const { serverId, channelId } = useParams();
 
   // Selectors
   const servers = useSelector(selectUserServers);

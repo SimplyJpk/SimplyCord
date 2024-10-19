@@ -1,9 +1,10 @@
 import { fn, col, literal } from '@sequelize/core';
 // Server Controller
 import { Request, Response } from 'express';
-import { Server, User, ServerUsers } from '@orm/models';
+import { Server, User, ServerUsers, Message } from '@orm/models';
 import { ServerAttributes } from '@shared/models/server';
 
+import { ServerUsersAttributes } from '@shared/models/serverUsers';
 import { websocketManager } from 'index';
 
 export async function getPublicServers(req: Request, res: Response) {
@@ -45,16 +46,28 @@ export async function getServerChannels(req: Request, res: Response) {
 export async function getServerUsers(req: Request, res: Response) {
   try {
     const { serverId } = req.params;
-    const users = await User.findAll();
-    const sanitizedUsers = users.map((user) => {
+
+    const users = await ServerUsers.findAll({
+      where: { serverId },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username'],
+        },
+      ],
+      attributes: ['id', 'userId', 'joinDate'],
+    });
+
+    const reducedUsers = users.map((user: ServerUsersAttributes) => {
       return {
         id: user.id,
-        username: user.username,
-        email: user.email,
+        joinDate: user.joinDate,
+        username: user.user?.username,
       };
     });
 
-    res.json(sanitizedUsers);
+    res.json(reducedUsers);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -85,11 +98,33 @@ export async function joinServer(req: Request, res: Response) {
     // Confirm user isn't already in the server
     const serverUser = await ServerUsers.findOne({ where: { serverId, userId: user.id } });
     if (serverUser) {
-      return res.status(401).json({ error: 'User already joined' });
+      // Leave
+      await ServerUsers.destroy({ where: { serverId, userId: user.id } });
+      return res.json({ server: server.dataValues, success: true });
     } else {
+      // Join
       await ServerUsers.create({ serverId, userId: user.id });
-      res.json({ success: true });
+      return res.json({ server: server.dataValues, success: true });
     }
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+}
+
+export async function getServerMessages(req: Request, res: Response) {
+  try {
+    const { serverId } = req.params;
+    const messages = await Message.findAll({
+      where: { serverId },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username'],
+        },
+      ]
+    });
+    res.json(messages);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }

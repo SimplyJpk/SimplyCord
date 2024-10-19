@@ -116,14 +116,6 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    dispatch(fetchMe());
-  }, [dispatch]);
-
-  const onServerSelect = (server: ServerAttributes) => {
-    dispatch(setCurrentServer(server.id));
-  };
-
   return (
     <>
       {/* <ServerSideBar server={servers.find((server) => server.id === currentServerId)} user={user} /> */}

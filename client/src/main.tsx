@@ -34,6 +34,11 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<App />} />
                 <Route path="explore" element={<AvailableServers />} />
+
+
+                <Route path="servers/:serverId" element={<App />} />
+                <Route path="servers/:serverId/channel/:channelId" element={<App />} />
+
                 {/* <Route path="servers/:serverId" element={<ServerView />}>
                   <Route path="channels/:channelId" element={<ChannelView />} />
                 </Route> */}

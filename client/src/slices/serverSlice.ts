@@ -4,6 +4,8 @@ import axiosInstance from '../network/axios';
 import { ServerAttributes } from '@shared/models/server';
 import { UserAttributes } from '@shared/models/user';
 
+import { fetchMe } from './userSlice';
+
 interface ServersState {
   publicServers: ServerAttributes[];
   selectedServersUserList: UserAttributes[];
@@ -23,13 +25,21 @@ export const fetchPublicServers = createAsyncThunk('servers/fetchPublicServers',
   return response.data;
 });
 
-export const fetchServerUsers = createAsyncThunk('servers/fetchServerUsers', async (serverId: number) => {
+export const fetchServerUsers = createAsyncThunk('servers/fetchServerUsers', async (serverId: string) => {
   const response = await axiosInstance.get(`/servers/${serverId}/users`);
   return response.data;
 });
 
-export const joinServer = createAsyncThunk('servers/joinServer', async (serverId: number) => {
+export const joinServer = createAsyncThunk('servers/joinServer', async (serverId: number, { dispatch }) => {
   const response = await axiosInstance.post(`/servers/${serverId}/join`);
+  if (response.data.success) {
+    dispatch(fetchMe());
+  }
+  return response.data;
+});
+
+export const fetchServerMessages = createAsyncThunk('messages/fetchServerMessages', async (serverId: string) => {
+  const response = await axiosInstance.get(`/servers/${serverId}/messages`);
   return response.data;
 });
 
@@ -60,18 +70,27 @@ const serversSlice = createSlice({
       .addCase(fetchServerUsers.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch server users';
+        state.selectedServersUserList = [];
       })
       .addCase(joinServer.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(joinServer.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.selectedServersUserList = action.payload;
       })
       .addCase(joinServer.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to join server';
-        state.selectedServersUserList = [];
+      })
+      .addCase(fetchServerMessages.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchServerMessages.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+      })
+      .addCase(fetchServerMessages.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Failed to fetch server messages';
       });
   },
 });

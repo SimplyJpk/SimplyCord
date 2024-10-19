@@ -11,6 +11,7 @@ import {
   getServerChannels,
   getServerUsers,
   joinServer,
+  getServerMessages,
 } from '@controllers/serverController';
 
 const router = express.Router();
@@ -34,6 +35,20 @@ router.get('/:serverId/channels', authenticateToken as express.RequestHandler, a
     const channels = await getServerChannels(req, res);
     if (!res.headersSent) {
       res.json(channels);
+    }
+  } catch (error) {
+    if (!res.headersSent) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  }
+});
+
+router.get('/:serverId/messages', authenticateToken as express.RequestHandler, async (req, res) => {
+  try {
+    const { serverId } = req.params;
+    const messages = await getServerMessages(req, res);
+    if (!res.headersSent) {
+      res.json(messages);
     }
   } catch (error) {
     if (!res.headersSent) {

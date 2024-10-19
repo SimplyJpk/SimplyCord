@@ -11,8 +11,13 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+// MUI Icons
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 // Slices
 import { selectPublicServers, joinServer } from '../../slices/serverSlice';
+import { selectUserServers } from '../../slices/userSlice';
 // Resources
 import DefaultAvatar from '../../assets/icons/profile.png';
 
@@ -49,12 +54,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     marginBottom: theme.spacing(1),
   },
+  memberCount: {
+    display: 'flex',
+    padding: theme.spacing(1),
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  }
 }));
 
 const ServerExplore = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+
   const servers = useSelector(selectPublicServers);
+  const userServers = useSelector(selectUserServers);
+
 
   const handleJoinServer = (serverId) => {
     dispatch(joinServer(serverId));
@@ -101,9 +115,20 @@ const ServerExplore = () => {
                     </Typography>
                   </Box>
                 </Box>
-                <Typography variant="body2" color="textSecondary" ml={'auto'} align='right'>
-                  {server.memberCount ? ` ${server.memberCount} members` : ''}
-                </Typography>
+                <Box className={classes.memberCount}>
+                  <Typography variant="body2" color="textSecondary" ml={2}>
+                    {server.memberCount ? ` ${server.memberCount} members` : 'No members'}
+                  </Typography>
+                  <IconButton
+                    color="primary"
+                    aria-label="join-server"
+                    onClick={() => handleJoinServer(server.id)}
+                  >
+                    {userServers.find((userServer) => userServer.serverId === server.id) ?
+                      <LogoutIcon /> : <LoginIcon />
+                    }
+                  </IconButton>
+                </Box>
               </CardContent>
             </Card>
           </Grid>
