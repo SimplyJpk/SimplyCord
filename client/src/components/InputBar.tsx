@@ -43,12 +43,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   charCount: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
     color: theme.palette.grey[400],
     fontSize: '0.75rem',
-    padding: theme.spacing(1),
+    padding: theme.spacing(0),
   },
   submitButton: {
     fontWeight: 'bold',
@@ -145,28 +142,34 @@ const InputBar: React.FC<InputBarProps> = ({
             <AddCircleOutlineIcon sx={{ fontSize: 40, color: 'grey.500', '&:hover': { color: 'grey.600' } }} />
           </IconButton>
         </Box>
-        <TextField
-          inputRef={inputRef}
-          name="message"
-          value={input}
-          onChange={handleInputChange}
-          variant="outlined"
-          multiline
-          maxRows={3}
-          placeholder="Type your message here..."
-          disabled={disabled}
-          autoComplete="off"
-          autoCorrect="off"
-          slotProps={{
-            htmlInput: {
-              maxLength,
-              minLength: 1
-            }
-          }}
-          className={classes.textField}
-        />
-        <Box className={classes.charCount}>
-          {maxLength - input.length} characters left
+        <Box sx={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
+          <TextField
+            inputRef={inputRef}
+            name="message"
+            value={input}
+            onChange={handleInputChange}
+            variant="outlined"
+            multiline
+            maxRows={3}
+            placeholder="Type your message here..."
+            disabled={disabled}
+            autoComplete="off"
+            autoCorrect="off"
+            slotProps={{
+              htmlInput: {
+                maxLength,
+                minLength: 1
+              }
+            }}
+            className={classes.textField}
+          />
+          <Box className={classes.charCount}>
+            {maxLength - input.length} characters left
+          </Box>
         </Box>
         <Button
           type="submit"
