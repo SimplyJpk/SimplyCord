@@ -18,7 +18,7 @@ import PlusCircle from '../assets/icons/ui/iconmonstr-plus-circle-lined-240.png'
 
 const useStyles = makeStyles((theme: Theme) => ({
   serverListContainer: {
-    width: '5rem',
+    minWidth: '4.5rem',
     height: '100vh',
     backgroundColor: 'gray.900',
     color: 'white',
@@ -29,14 +29,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   serverList: {
     display: 'flex',
+    paddingTop: theme.spacing(1),
     flexDirection: 'column',
     gap: '0.5rem',
     overflowY: 'auto',
   },
   serverItem: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    margin: 'auto',
     gap: '0.5rem',
     borderRadius: '0.375rem',
     border: '1px solid',
@@ -47,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: 'gray.200',
     },
     position: 'relative',
+    overflow: 'hidden',
   },
   avatar: {
     width: '3.5rem',
@@ -61,14 +61,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '0.375rem',
-    border: '1px solid',
+    borderRadius: '1rem',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
     fontSize: '0.875rem',
-    height: '4rem',
-    width: '4rem',
+    height: '3.5rem',
+    width: '3.5rem',
     cursor: 'pointer',
     '&:hover': {
-      backgroundColor: 'gray.200',
+      backgroundColor: theme.palette.grey[800],
     },
     position: 'absolute',
     bottom: '0.5rem',

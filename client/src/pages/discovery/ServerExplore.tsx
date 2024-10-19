@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 // MUI
 import { makeStyles } from '@mui/styles';
@@ -16,10 +16,11 @@ import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 // Slices
-import { selectPublicServers, joinServer } from '../../slices/serverSlice';
+import { selectPublicServers, fetchPublicServers, joinServer } from '../../slices/serverSlice';
 import { selectUserServers } from '../../slices/userSlice';
 // Resources
 import DefaultAvatar from '../../assets/icons/profile.png';
+import { isEqual } from 'lodash';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -37,6 +38,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       transform: 'translateY(-5px)',
     },
+    // borderRadius top at top
+    borderTopLeftRadius: theme.spacing(5),
+    borderTopRightRadius: theme.spacing(5),
+    borderBottomLeftRadius: theme.spacing(2),
+    borderBottomRightRadius: theme.spacing(2),
   },
   cardMedia: {
     paddingTop: '56.25%', // 16:9 aspect ratio
@@ -56,7 +62,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   memberCount: {
     display: 'flex',
-    padding: theme.spacing(1),
     alignItems: 'center',
     justifyContent: 'space-between',
   }
@@ -69,10 +74,19 @@ const ServerExplore = () => {
   const servers = useSelector(selectPublicServers);
   const userServers = useSelector(selectUserServers);
 
-
+  // Handlers
   const handleJoinServer = (serverId) => {
     dispatch(joinServer(serverId));
   };
+
+  // Effects
+  useEffect(() => {
+    dispatch(fetchPublicServers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchPublicServers());
+  }, [userServers]);
 
   return (
     <div className={classes.root}>
