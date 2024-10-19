@@ -7,13 +7,15 @@ import {
 import sequelizeInstance from '../../config/database';
 
 import { ServerAttributes } from '@shared/models/server';
+import { v4 as uuidv4 } from 'uuid';
 
 class Server extends Model implements ServerAttributes {
   public id!: CreationOptional<number>;
   public gid!: string;
   public name!: string;
   public description!: string;
-  public icon!: string;
+  public iconUrl!: string;
+  public bannerUrl!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -21,6 +23,7 @@ class Server extends Model implements ServerAttributes {
 
   public static associate(models: any) {
     Server.hasMany(models.Message, { foreignKey: 'serverId' });
+    Server.hasMany(models.ServerUsers, { foreignKey: 'serverId' });
   }
 }
 
@@ -45,7 +48,11 @@ Server.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    icon: {
+    iconUrl: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    bannerUrl: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -55,6 +62,13 @@ Server.init(
     tableName: 'servers',
     modelName: 'Server',
     paranoid: true,
+    hooks: {
+      beforeCreate: async (server: Server) => {
+        if (!server.gid) {
+          server.gid = uuidv4();
+        }
+      }
+    }
   }
 );
 

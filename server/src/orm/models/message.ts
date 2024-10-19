@@ -7,9 +7,11 @@ import {
 import sequelizeInstance from '../../config/database';
 
 import { MessageAttributes } from '@shared/models/message';
+import { v4 as uuidv4 } from 'uuid';
 
 class Message extends Model implements MessageAttributes {
   public id!: CreationOptional<number>;
+  public gid!: string;
   public userId!: number;
   public serverId!: number;
   public message!: string;
@@ -49,6 +51,13 @@ Message.init(
     tableName: 'messages',
     modelName: 'Message',
     paranoid: true,
+    hooks: {
+      beforeCreate: async (message: Message) => {
+        if (!message.gid) {
+          message.gid = uuidv4();
+        }
+      }
+    },
   }
 );
 

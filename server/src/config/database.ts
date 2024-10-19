@@ -64,7 +64,8 @@ async function initializeDatabase() {
         name: 'Server 1',
         gid: 'server1',
         description: 'This is the first server',
-        icon: '',
+        iconUrl: '',
+        bannerUrl: '',
       });
       console.log('Created server 1');
 
@@ -72,7 +73,8 @@ async function initializeDatabase() {
         name: 'Server 2',
         gid: 'server2',
         description: 'This is the second server',
-        icon: '',
+        iconUrl: '',
+        bannerUrl: '',
       });
       console.log('Created server 2');
 
@@ -80,7 +82,8 @@ async function initializeDatabase() {
         name: 'Server 3',
         gid: 'server3',
         description: 'This is the third server',
-        icon: '',
+        iconUrl: '',
+        bannerUrl: '',
       });
 
       console.log('Created server 3');

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { UserAttributes } from '@shared/models/user';
 // Slices
 import { selectCurrentServerId } from '../../../slices/app';
@@ -21,13 +21,13 @@ import isEqual from 'lodash/isEqual';
 
 const useStyles = makeStyles((theme: Theme) => ({
   sidebar: {
-    width: '20rem',
     height: '100vh',
     backgroundColor: theme.palette.grey[800],
     color: 'white',
     position: 'relative',
     borderRight: `1px solid ${theme.palette.grey[700]}`,
     overflow: 'hidden',
+    transition: 'width 0.5s',
   },
   header: {
     display: 'flex',
@@ -67,13 +67,10 @@ export default function UserSideBar() {
   const currentServerId = useSelector(selectCurrentServerId);
   const selectedServersUserList = useSelector(selectSelectedServersUserList);
 
-  // Effects
-  useEffect(() => {
-    if (currentServerId && selectedServersUserList.length === 0) {
-      dispatch(fetchServerUsers(currentServerId));
-    }
-  }, [currentServerId, dispatch]);
+  // State
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // Handlers
   const getCurrentUserList = useMemo(() => {
     const currentUserList = selectedServersUserList.map((user) => {
       const isOnline = onlineUsers.includes(user.id);
@@ -82,8 +79,28 @@ export default function UserSideBar() {
     return currentUserList;
   }, [selectedServersUserList, onlineUsers]);
 
+  // Effects
+  useEffect(() => {
+    if (currentServerId && selectedServersUserList.length === 0) {
+      dispatch(fetchServerUsers(currentServerId));
+    }
+  }, [currentServerId, dispatch]);
+
+  useEffect(() => {
+    if (!currentServerId || selectedServersUserList.length === 0) {
+      setDrawerOpen(false);
+    } else {
+      setDrawerOpen(true);
+    }
+  }, [currentServerId, selectedServersUserList]);
+
   return (
-    <Box className={classes.sidebar}>
+    <Box
+      className={classes.sidebar}
+      sx={{
+        width: drawerOpen ? '20rem' : '0',
+      }}
+    >
       <Box className={classes.header}>
         <Typography variant="h6" className={classes.headerText}>
           Users

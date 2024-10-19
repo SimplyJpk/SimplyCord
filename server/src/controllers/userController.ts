@@ -4,7 +4,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import { User } from "@orm/models";
+import { ServerUsers } from "@orm/models";
+
 import { UserAttributes } from '@shared/models/user';
+import { ServerUsersAttributes } from '@shared/models/serverUsers';
 
 export async function registerUser(req: Request, res: Response) {
   const { username, email, password } = req.body;
@@ -87,6 +90,13 @@ export async function getUser(req: Request, res: Response) {
         where: { id: userId },
         // TODO: (James) Attribute scope limited to front-end related fields
         attributes: ['id', 'username', 'email'],
+        include: [
+          {
+            model: ServerUsers,
+            as: 'serverUsers',
+            attributes: ['id', 'serverId', 'userId', 'joinDate'],
+          },
+        ],
       });
       if (user) {
         res.json(user);
@@ -100,4 +110,3 @@ export async function getUser(req: Request, res: Response) {
     res.status(500).json({ error: (error as Error).message });
   }
 }
-

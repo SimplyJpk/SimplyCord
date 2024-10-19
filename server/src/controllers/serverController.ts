@@ -1,12 +1,33 @@
+import { fn, col } from '@sequelize/core';
+
 // Server Controller
 import { Request, Response } from 'express';
-import { Server, User } from '@orm/models';
+import { Server, User, ServerUsers } from '@orm/models';
 
 import { websocketManager } from 'index';
 
-export async function getServers(req: Request, res: Response) {
+export async function getPublicServers(req: Request, res: Response) {
   try {
-    const servers = await Server.findAll();
+    const servers = await Server.findAll({
+      attributes: [
+        'id',
+        'name',
+        'description',
+        'iconUrl',
+        'bannerUrl',
+        'createdAt',
+        [fn('COUNT', col('ServerUsers.id')), 'memberCount']
+      ],
+      include: [
+        {
+          model: ServerUsers,
+          attributes: [],
+          required: false
+        }
+      ],
+      group: ['Server.id'],
+    });
+
     res.json(servers);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
@@ -36,6 +57,35 @@ export async function getServerUsers(req: Request, res: Response) {
     });
 
     res.json(sanitizedUsers);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+}
+
+export async function joinServer(req: Request, res: Response) {
+  try {
+    const { serverId } = req.params;
+    // Find User
+    const user = await User.findOne({ where: { id: req.user?.id } });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid user' });
+    }
+
+    // Find Server
+    // TODO: (James) Confirm server is public
+    const server = await Server.findOne({ where: { id: serverId } });
+    if (!server) {
+      return res.status(401).json({ error: 'Invalid server' });
+    }
+
+    // Confirm user isn't already in the server
+    const serverUser = await ServerUsers.findOne({ where: { serverId, userId: user.id } });
+    if (serverUser) {
+      return res.status(401).json({ error: 'User already joined' });
+    } else {
+      await ServerUsers.create({ serverId, userId: user.id });
+      res.json({ success: true });
+    }
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }

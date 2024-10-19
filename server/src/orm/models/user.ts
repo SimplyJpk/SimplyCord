@@ -40,6 +40,7 @@ class User extends Model implements UserAttributes {
 
   public static associate(models: any) {
     User.hasMany(models.Message, { foreignKey: 'userId' });
+    User.hasMany(models.ServerUsers, { foreignKey: 'userId' });
   }
 }
 

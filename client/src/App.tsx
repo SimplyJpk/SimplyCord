@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from './store/store.ts';
 import { fetchServerMessages, sendMessageToServer } from './slices/messageSlice';
 import { fetchMe, setOnlineUsers } from './slices/userSlice';
-import { fetchServers } from './slices/serverSlice';
+import { fetchPublicServers } from './slices/serverSlice';
 import WebSocketClient from './network/webSocket';
 
 const { VITE_APP_WEBSOCKET_URL } = import.meta.env;
@@ -23,7 +23,6 @@ import {
 } from './slices/app';
 // App component
 import InputBar from './components/InputBar';
-import ServerList from './components/ServerList';
 import ServerSideBar from './components/layouts/serverSideBar/ServerSideBar';
 import MessageList from './components/chat/MessageList';
 import UserSideBar from './components/layouts/serverSideBar/UserSideBar';
@@ -89,7 +88,6 @@ function App() {
   // Selectors
   const messages = useSelector((state: RootState) => state.messages.messages);
   const messageStatus = useSelector((state: RootState) => state.messages.status);
-  const servers = useSelector((state: RootState) => state.servers.servers);
   const user = useSelector((state: RootState) => state.user.user);
   const auth = useSelector((state: RootState) => state.auth);
 
@@ -100,7 +98,7 @@ function App() {
   // State
 
   useEffect(() => {
-    dispatch(fetchServers());
+    dispatch(fetchPublicServers());
   }, [dispatch]);
 
   useEffect(() => {
@@ -127,42 +125,34 @@ function App() {
   };
 
   return (
-    <WebSocketProvider
-      url={VITE_APP_WEBSOCKET_URL}
-      token={auth.token}
-    >
-      <>
-        <Box className={classes.appContainer}>
-          <ServerList onServerSelect={onServerSelect} />
-          <ServerSideBar server={servers.find((server) => server.id === currentServerId)} user={user} />
-          <Box className={classes.mainContent}>
-            <Box className={classes.messageContainer}>
-              <Box className={classes.messageInnerContainer}>
-                {!currentServerId && (
-                  <Paper className={classes.selectServerPaper}>
-                    <Typography className={classes.selectServerText}>
-                      Select a server
-                    </Typography>
-                  </Paper>
-                )}
-                {currentServerId && (
-                  <MessageList
-                    messages={messages}
-                    isLoading={false} // TODO: (James) Add loading state that is aware of server changes, don't isLoading if only message loading
-                  />
-                )}
-              </Box>
-            </Box>
-            <InputBar
-              onSubmit={sendMessageHandler}
-              inputRef={inputMessageRef}
-              disabled={!currentServerId}
-            />
+    <>
+      {/* <ServerSideBar server={servers.find((server) => server.id === currentServerId)} user={user} /> */}
+      <Box className={classes.mainContent}>
+        <Box className={classes.messageContainer}>
+          <Box className={classes.messageInnerContainer}>
+            {!currentServerId && (
+              <Paper className={classes.selectServerPaper}>
+                <Typography className={classes.selectServerText}>
+                  Select a server
+                </Typography>
+              </Paper>
+            )}
+            {currentServerId && (
+              <MessageList
+                messages={messages}
+                isLoading={false} // TODO: (James) Add loading state that is aware of server changes, don't isLoading if only message loading
+              />
+            )}
           </Box>
-          <UserSideBar />
         </Box>
-      </>
-    </WebSocketProvider>
+        <InputBar
+          onSubmit={sendMessageHandler}
+          inputRef={inputMessageRef}
+          disabled={!currentServerId}
+        />
+      </Box>
+      <UserSideBar />
+    </>
   );
 }
 

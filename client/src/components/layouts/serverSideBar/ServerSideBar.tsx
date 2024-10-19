@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { ServerAttributes } from '@shared/models/server';
@@ -19,13 +20,13 @@ import UserPrimary from '../../user/UserPrimary';
 
 const useStyles = makeStyles((theme: Theme) => ({
   sidebar: {
-    width: '20rem',
     height: '100vh',
     backgroundColor: theme.palette.grey[800],
     color: 'white',
     position: 'relative',
     borderRight: `1px solid ${theme.palette.grey[700]}`,
     overflow: 'hidden',
+    transition: 'width 0.5s',
   },
   header: {
     display: 'flex',
@@ -80,13 +81,34 @@ export default function ServerSideBar({
   const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
 
+  // State
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Handlers
+
+  // Effects
+  useEffect(() => {
+    if (!server || server.channels?.length === 0) {
+      setDrawerOpen(false);
+    } else {
+      setDrawerOpen(true);
+    }
+  }, [server]);
+
   return (
-    <Box className={classes.sidebar}>
+    <Box
+      className={classes.sidebar}
+      sx={{
+        width: drawerOpen ? '20rem' : '0',
+      }}
+    >
       <Box className={classes.header}>
         <Typography className={classes.headerText}>{server?.name}</Typography>
       </Box>
       <Divider className={classes.divider} />
-      <Box className={classes.channelList}>
+      <Box
+        className={classes.channelList}
+      >
         <Box className={classes.header}>
           <Typography className={classes.headerText}>Channels</Typography>
         </Box>

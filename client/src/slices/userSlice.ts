@@ -51,4 +51,7 @@ export const { setOnlineUsers } = userSlice.actions;
 
 export default userSlice.reducer;
 
+export const selectUser = (state) => state.user.user;
+export const selectUserServers = (state) => state.user.user?.serverUsers ?? [];
+
 export type { UserState };

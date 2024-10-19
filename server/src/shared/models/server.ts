@@ -5,10 +5,14 @@ export interface ServerAttributes {
   gid: string;
   name: string;
   description: string;
-  icon: string;
+  iconUrl: string;
+  bannerUrl: string;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
+  // Possible from /servers
+  memberCount?: number;
 
+  // Association of serverChannels
   channels?: ServerChannelAttributes[];
 }

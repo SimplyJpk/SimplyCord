@@ -17,6 +17,7 @@ import { ThemeProvider } from './theme/ThemeContext';
 import './index.css';
 // Pages
 import NotFoundPage from './pages/error/NotFoundPage';
+import AvailableServers from './pages/discovery/ServerExplore';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -32,11 +33,11 @@ createRoot(document.getElementById('root')!).render(
             <Route element={<ProtectedLayout />}>
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<App />} />
+                <Route path="explore" element={<AvailableServers />} />
                 {/* <Route path="servers/:serverId" element={<ServerView />}>
                   <Route path="channels/:channelId" element={<ChannelView />} />
                 </Route> */}
-                {/* <Route path="explore" element={<ExploreView />} />
-                <Route path="settings" element={<SettingsView />} /> */}
+                {/* <Route path="settings" element={<SettingsView />} /> */}
               </Route>
             </Route>
 

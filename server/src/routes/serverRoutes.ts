@@ -7,16 +7,17 @@ import { Server, ServerChannel } from '@orm/models';
 import { ServerAttributes } from '@shared/models/server';
 
 import {
-  getServers,
+  getPublicServers,
   getServerChannels,
   getServerUsers,
+  joinServer,
 } from '@controllers/serverController';
 
 const router = express.Router();
 
 router.get('/', authenticateToken as express.RequestHandler, async (req, res) => {
   try {
-    const servers = await getServers(req, res);
+    const servers = await getPublicServers(req, res);
     if (!res.headersSent) {
       res.json(servers);
     }
@@ -44,6 +45,16 @@ router.get('/:serverId/channels', authenticateToken as express.RequestHandler, a
 router.get('/:serverId/users', authenticateToken as express.RequestHandler, async (req, res) => {
   try {
     await getServerUsers(req, res);
+  } catch (error) {
+    if (!res.headersSent) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  }
+});
+
+router.post('/:serverId/join', authenticateToken as express.RequestHandler, async (req, res) => {
+  try {
+    await joinServer(req, res);
   } catch (error) {
     if (!res.headersSent) {
       res.status(500).json({ error: (error as Error).message });

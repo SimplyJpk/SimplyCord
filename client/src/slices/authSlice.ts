@@ -38,7 +38,7 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (credent
 
 export const fetchUserProfile = createAsyncThunk('user/me', async () => {
   const response = await axiosInstance.get('/user/me');
-  return response.json();
+  return response;
 });
 
 const authSlice = createSlice({

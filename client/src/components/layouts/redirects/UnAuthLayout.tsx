@@ -10,16 +10,17 @@ import { fetchMe } from '../../../slices/userSlice';
 const UnAuthLayout = () => {
   const dispatch: AppDispatch = useDispatch();
 
+  // TODO: (James) Clean this up a bit
   const isAuthenticated = useAuth();
   const location = useLocation();
 
   const auth = useSelector((state: RootState) => state.auth);
 
-  if (isAuthenticated) {
+  if (!isAuthenticated.isLoading && isAuthenticated.isAuthenticated) {
     if (location.pathname === '/login' || location.pathname === '/register') {
       return <Navigate to="/" replace={true} />;
     }
-  } else if (auth.token) {
+  } else if (!isAuthenticated.isLoading && auth.token) {
     dispatch(fetchMe());
   }
 

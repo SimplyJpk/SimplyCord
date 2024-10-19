@@ -1,3 +1,5 @@
+import { ServerUsersAttributes } from './serverUsers';
+
 export interface UserAttributes {
   id: number;
   gid: string;
@@ -12,4 +14,5 @@ export interface UserAttributes {
   // updatedAt?: Date;
   // deletedAt?: Date;
   isOnline?: boolean;
+  serverUsers?: ServerUsersAttributes[];
 }
