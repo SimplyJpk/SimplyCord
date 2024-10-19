@@ -15,6 +15,8 @@ import UnAuthLayout from './components/layouts/redirects/UnAuthLayout';
 // Style
 import { ThemeProvider } from './theme/ThemeContext';
 import './index.css';
+// Pages
+import NotFoundPage from './pages/error/NotFoundPage';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -30,8 +32,15 @@ createRoot(document.getElementById('root')!).render(
             <Route element={<ProtectedLayout />}>
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<App />} />
+                {/* <Route path="servers/:serverId" element={<ServerView />}>
+                  <Route path="channels/:channelId" element={<ChannelView />} />
+                </Route> */}
+                {/* <Route path="explore" element={<ExploreView />} />
+                <Route path="settings" element={<SettingsView />} /> */}
               </Route>
             </Route>
+
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </Provider>
