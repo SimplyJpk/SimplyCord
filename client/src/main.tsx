@@ -10,8 +10,8 @@ import MainLayout from './components/layouts/MainLayout';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 // Redirects
-import ProtectedRoute from './components/layouts/redirects/ProtectedRoute';
-import LoginRoute from './components/layouts/redirects/LoginRoute';
+import ProtectedLayout from './components/layouts/redirects/ProtectedLayout';
+import UnAuthLayout from './components/layouts/redirects/UnAuthLayout';
 // Style
 import { ThemeProvider } from './theme/ThemeContext';
 import './index.css';
@@ -22,31 +22,15 @@ createRoot(document.getElementById('root')!).render(
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route
-                index
-                element={
-                  <ProtectedRoute>
-                    <App />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="login"
-                element={
-                  <LoginRoute>
-                    <Login />
-                  </LoginRoute>
-                }
-              />
-              <Route
-                path="register"
-                element={
-                  <LoginRoute>
-                    <Register />
-                  </LoginRoute>
-                }
-              />
+            <Route element={<UnAuthLayout />}>
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+            </Route>
+
+            <Route element={<ProtectedLayout />}>
+              <Route path="/" element={<MainLayout />}>
+                <Route index element={<App />} />
+              </Route>
             </Route>
           </Routes>
         </BrowserRouter>

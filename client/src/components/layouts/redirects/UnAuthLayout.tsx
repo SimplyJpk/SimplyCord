@@ -1,13 +1,13 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
-import type { AppDispatch } from '../../../store/store.ts';
+import type { AppDispatch } from '../../../store/store';
 import { RootState } from '../../../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 // Slice
 import { fetchMe } from '../../../slices/userSlice';
 
-const LoginRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const UnAuthLayout = () => {
   const dispatch: AppDispatch = useDispatch();
 
   const isAuthenticated = useAuth();
@@ -17,13 +17,13 @@ const LoginRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   if (isAuthenticated) {
     if (location.pathname === '/login' || location.pathname === '/register') {
-      return <Navigate to="/" />;
+      return <Navigate to="/" replace={true} />;
     }
   } else if (auth.token) {
     dispatch(fetchMe());
   }
 
-  return <>{children}</>;
+  return <Outlet />;
 };
 
-export default LoginRoute;
+export default UnAuthLayout;
