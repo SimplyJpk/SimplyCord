@@ -61,7 +61,7 @@ export async function getServerUsers(req: Request, res: Response) {
 
     const reducedUsers = users.map((user: ServerUsersAttributes) => {
       return {
-        id: user.id,
+        id: user.userId,
         joinDate: user.joinDate,
         username: user.user?.username,
       };
