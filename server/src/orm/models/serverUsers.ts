@@ -13,6 +13,7 @@ class ServerUsers extends Model implements ServerUsersAttributes {
   public serverId!: number;
   public userId!: number;
   public joinDate!: Date;
+  public order!: number;
 
   public static associate(models: any) {
     ServerUsers.belongsTo(models.Server, { foreignKey: 'serverId' });
@@ -39,12 +40,23 @@ ServerUsers.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    order: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      defaultValue: 0,
+    }
   },
   {
     sequelize: sequelizeInstance,
     tableName: 'serverUsers',
     modelName: 'ServerUsers',
     paranoid: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ['serverId', 'userId']
+      }
+    ],
     hooks: {
       beforeCreate: async (serverUser: ServerUsers) => {
         if (!serverUser.joinDate) {

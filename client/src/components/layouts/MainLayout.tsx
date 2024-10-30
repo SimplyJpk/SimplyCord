@@ -23,7 +23,7 @@ import { ServerUsersAttributes } from '@shared/models/server';
 import { WebSocketProvider } from '../../context/WebSocketContext';
 const { VITE_APP_WEBSOCKET_URL } = import.meta.env;
 // App Components
-import ServerList from '../../components/ServerList';
+import ServerList from './ServerList/ServerList';
 
 const useStyles = makeStyles({
   appContainer: {

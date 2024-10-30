@@ -5,6 +5,7 @@ export interface ServerUsersAttributes {
   serverId: number;
   userId: number;
   joinDate?: Date;
+  order: number;
 
   user?: {
     id: number;

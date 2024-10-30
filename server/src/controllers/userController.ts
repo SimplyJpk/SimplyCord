@@ -94,7 +94,7 @@ export async function getUser(req: Request, res: Response) {
           {
             model: ServerUsers,
             as: 'serverUsers',
-            attributes: ['id', 'serverId', 'userId', 'joinDate'],
+            attributes: ['id', 'serverId', 'userId', 'joinDate', 'order'],
             include: [
               {
                 model: Server,
@@ -102,9 +102,10 @@ export async function getUser(req: Request, res: Response) {
                 attributes: ['id', 'name', 'description', 'iconUrl', 'bannerUrl', 'createdAt'],
                 required: false
               }
-            ]
+            ],
           },
         ],
+        order: [[{ model: ServerUsers, as: 'serverUsers' }, 'order', 'ASC']],
       });
       if (user) {
         res.json(user);
