@@ -28,12 +28,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRight: `1px solid ${theme.palette.grey[700]}`,
     overflow: 'hidden',
     transition: 'width 0.5s',
+    display: 'flex',
+    flexDirection: 'column',
   },
   header: {
     display: 'flex',
     alignItems: 'center',
     height: '3rem',
-    width: '100%',
     cursor: 'pointer',
     '&:hover': { backgroundColor: theme.palette.grey[900] },
   },
@@ -98,7 +99,7 @@ export default function UserSideBar() {
     <Box
       className={classes.sidebar}
       sx={{
-        width: drawerOpen ? '20rem' : '0',
+        width: drawerOpen ? '16rem' : '0rem',
       }}
     >
       <Box className={classes.header}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { UserAttributes } from '@shared/models/user';
 // MUI
 import { Theme } from '@mui/material/styles';
@@ -54,10 +54,16 @@ export default function UserSecondary({
 }) {
   const classes = useStyles();
 
+  useEffect(() => {
+    if (user.userProfilePicture) {
+      fetchUserProfilePicture(user.userProfilePicture.id);
+    }
+  }, [user.userProfilePicture]);
+
   return (
     <Box className={classes.root}>
-      <Avatar
-        src={DefaultAvatar}
+      <img
+        id={`profile-picture-${user.id}`}
         alt="user-avatar"
         className={classes.avatar}
       />
@@ -76,4 +82,19 @@ export default function UserSecondary({
       </Box>
     </Box>
   );
+}
+
+async function fetchUserProfilePicture(userId) {
+  try {
+    const response = await fetch(`/api/profile-picture/${userId}`);
+    if (response.ok) {
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      document.getElementById(`profile-picture-${userId}`).getElementsByTagName('img')[0].src = imageUrl;
+    } else {
+      console.error('Failed to fetch profile picture:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error fetching profile picture:', error);
+  }
 }

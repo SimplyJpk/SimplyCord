@@ -20,13 +20,14 @@ import UserPrimary from '../../user/UserPrimary';
 
 const useStyles = makeStyles((theme: Theme) => ({
   sidebar: {
-    height: '100vh',
     backgroundColor: theme.palette.grey[800],
     color: 'white',
     position: 'relative',
     borderRight: `1px solid ${theme.palette.grey[700]}`,
     overflow: 'hidden',
     transition: 'width 0.5s',
+    display: 'flex',
+    flexDirection: 'column',
   },
   header: {
     display: 'flex',
@@ -35,6 +36,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     cursor: 'pointer',
     '&:hover': { backgroundColor: theme.palette.grey[900] },
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
   },
   headerText: {
     color: 'white',
@@ -88,7 +91,7 @@ export default function ServerSideBar({
 
   // Effects
   useEffect(() => {
-    if (!server || server.channels?.length === 0) {
+    if (!server) { // || server.channels?.length === 0) {
       setDrawerOpen(false);
     } else {
       setDrawerOpen(true);
@@ -99,7 +102,7 @@ export default function ServerSideBar({
     <Box
       className={classes.sidebar}
       sx={{
-        width: drawerOpen ? '20rem' : '0',
+        width: drawerOpen ? '16rem' : '0rem',
       }}
     >
       <Box className={classes.header}>

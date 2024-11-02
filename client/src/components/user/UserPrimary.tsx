@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DefaultAvatar from './../../assets/icons/profile.png';
@@ -67,10 +67,17 @@ export default function UserPrimary({
   const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
 
+  useEffect(() => {
+    if (user?.userProfilePicture) {
+      fetchUserProfilePicture(user.userProfilePicture.id);
+    }
+  }, [user]);
+
   return (
     <Box className={classes.root}>
       <Box className={classes.container}>
-        <Avatar
+        <img
+          id="profile-picture"
           src={DefaultAvatar}
           alt="user-avatar"
           className={classes.avatar}
@@ -93,4 +100,19 @@ export default function UserPrimary({
       </Box>
     </Box>
   );
+}
+
+async function fetchUserProfilePicture(userId) {
+  try {
+    const response = await fetch(`/api/profile-picture/${userId}`);
+    if (response.ok) {
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      document.getElementById('profile-picture').src = imageUrl;
+    } else {
+      console.error('Failed to fetch profile picture:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error fetching profile picture:', error);
+  }
 }
