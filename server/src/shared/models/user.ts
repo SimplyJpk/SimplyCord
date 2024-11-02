@@ -1,4 +1,5 @@
 import { ServerUsersAttributes } from './serverUsers';
+import { UserProfilePictureAttributes } from './userProfilePicture';
 
 export interface UserAttributes {
   id: number;
@@ -15,4 +16,5 @@ export interface UserAttributes {
   // deletedAt?: Date;
   isOnline?: boolean;
   serverUsers?: ServerUsersAttributes[];
+  userProfilePicture?: UserProfilePictureAttributes;
 }

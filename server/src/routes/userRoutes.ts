@@ -1,20 +1,44 @@
 import express from 'express';
-
-import { registerUser, loginUser, getUser } from '@controllers/userController';
-
-import { User, ServerUsers } from '@orm/models';
+import multer from 'multer';
+import {
+  registerUser,
+  loginUser,
+  getUser,
+  getUserProfilePicture
+} from '@controllers/userController';
+import { User, ServerUsers, UserProfilePicture } from '@orm/models';
 import { UserAttributes } from '@shared/models/user';
 import { ServerUsersAttributes } from '@shared/models/serverUsers';
-
-// Middleware
 import { authenticateToken } from '../middleware/authenticateToken';
 import { Op } from '@sequelize/core';
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
+// Configure multer
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, process.env.TEMP_UPLOADS_PATH || 'uploads');
+    },
+    filename: (req, file, cb) => {
+      cb(null, `${Date.now()}-${file.originalname}`);
+    },
+  }),
+  limits: { fileSize: 100 * 1024 }, // 100kb limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type'));
+    }
+  },
+});
+
+// TODO: (James) Maybe move behind auth to avoid potential abuse?
+router.post('/register', upload.single('file'), async (req, res) => {
   try {
-    await registerUser(req, res);
+    const profilePicture = req.file ? req.file.path : null;
+    await registerUser(req, res, profilePicture);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -60,6 +84,16 @@ router.put('/server/order', authenticateToken as express.RequestHandler, async (
     if (!res.headersSent) {
       res.json({ success: true });
     }
+  } catch (error) {
+    if (!res.headersSent) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  }
+});
+
+router.get('/profile-picture/:userId', authenticateToken as express.RequestHandler, async (req, res) => {
+  try {
+    await getUserProfilePicture(req, res);
   } catch (error) {
     if (!res.headersSent) {
       res.status(500).json({ error: (error as Error).message });

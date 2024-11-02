@@ -4,6 +4,7 @@ import Server from './models/server';
 import ServerChannel from './models/serverChannel';
 import User from './models/user';
 import ServerUsers from './models/serverUsers';
+import UserProfilePicture from './models/userProfilePicture';
 
 const models = {
   Message,
@@ -11,6 +12,7 @@ const models = {
   ServerChannel,
   User,
   ServerUsers,
+  UserProfilePicture,
 };
 
 Object.values(models).forEach((model) => {
@@ -26,5 +28,6 @@ export {
   Message,
   Server,
   ServerChannel,
-  ServerUsers
+  ServerUsers,
+  UserProfilePicture,
 };

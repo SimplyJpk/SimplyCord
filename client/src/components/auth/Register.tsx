@@ -17,10 +17,11 @@ const Register: React.FC = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [file, setFile] = useState<File | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const credentials: RegisterCredentials = { username, email, password };
+    const credentials: RegisterCredentials = { username, email, password, file };
     dispatch(registerUser(credentials));
   };
 
@@ -115,6 +116,14 @@ const Register: React.FC = () => {
             fullWidth
             sx={{ mb: 2 }}
           />
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <label>Profile Picture</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files?.[0])}
+            />
+          </Box>
           <Button
             type="submit"
             variant="contained"

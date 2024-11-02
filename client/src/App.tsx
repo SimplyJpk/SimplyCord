@@ -23,9 +23,7 @@ import {
 } from './slices/app';
 // App component
 import InputBar from './components/InputBar';
-import ServerSideBar from './components/layouts/serverSideBar/ServerSideBar';
 import MessageList from './components/chat/MessageList';
-import UserSideBar from './components/layouts/serverSideBar/UserSideBar';
 
 import { ServerAttributes } from '@shared/models/server';
 import { WebSocketProvider } from './context/WebSocketContext';
@@ -143,7 +141,6 @@ function App() {
           disabled={!currentServerId}
         />
       </Box>
-      <UserSideBar />
     </>
   );
 }

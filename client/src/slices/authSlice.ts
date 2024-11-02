@@ -29,10 +29,22 @@ export interface RegisterCredentials {
   username: string;
   email: string;
   password: string;
+  file: File | null;
 }
 
 export const registerUser = createAsyncThunk('auth/registerUser', async (credentials: RegisterCredentials) => {
-  const response = await axiosInstance.post('/user/register', credentials);
+  const formData = new FormData();
+  formData.append('username', credentials.username);
+  formData.append('email', credentials.email);
+  formData.append('password', credentials.password);
+  if (credentials.file) {
+    formData.append('file', credentials.file);
+  }
+  const response = await axiosInstance.post('/user/register', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 });
 

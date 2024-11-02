@@ -8,6 +8,7 @@ import sequelizeInstance from '../../config/database';
 
 import { UserAttributes } from '@shared/models/user';
 import { v4 as uuidv4 } from 'uuid';
+import UserProfilePicture from './userProfilePicture';
 
 export interface ServerUserAttributes extends UserAttributes {
   // id: number;
@@ -41,6 +42,7 @@ class User extends Model implements UserAttributes {
   public static associate(models: any) {
     User.hasMany(models.Message, { foreignKey: 'userId' });
     User.hasMany(models.ServerUsers, { foreignKey: 'userId' });
+    User.hasOne(models.UserProfilePicture, { foreignKey: 'userId' });
   }
 }
 
