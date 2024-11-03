@@ -12,7 +12,8 @@ import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import Avatar from '@mui/material/Avatar';
+// Components
+import ProfilePicture from './ProfilePicture';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -33,11 +34,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 32,
     height: 32,
     cursor: 'pointer',
-    boxShadow: theme.shadows[1],
     transition: 'all 0.5s',
     '&:hover': {
       boxShadow: theme.shadows[6],
     },
+    borderRadius: '50%',
   },
   userInfo: {
     display: 'flex',
@@ -67,20 +68,12 @@ export default function UserPrimary({
   const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
 
-  useEffect(() => {
-    if (user?.userProfilePicture) {
-      fetchUserProfilePicture(user.userProfilePicture.id);
-    }
-  }, [user]);
-
   return (
     <Box className={classes.root}>
       <Box className={classes.container}>
-        <img
-          id="profile-picture"
-          src={DefaultAvatar}
-          alt="user-avatar"
-          className={classes.avatar}
+        <ProfilePicture
+          userId={user?.id}
+          isOnline={true}
         />
         <Box className={classes.userInfo}>
           <Typography className={classes.username}>{user?.username}</Typography>
@@ -100,19 +93,4 @@ export default function UserPrimary({
       </Box>
     </Box>
   );
-}
-
-async function fetchUserProfilePicture(userId) {
-  try {
-    const response = await fetch(`/api/profile-picture/${userId}`);
-    if (response.ok) {
-      const blob = await response.blob();
-      const imageUrl = URL.createObjectURL(blob);
-      document.getElementById('profile-picture').src = imageUrl;
-    } else {
-      console.error('Failed to fetch profile picture:', response.statusText);
-    }
-  } catch (error) {
-    console.error('Error fetching profile picture:', error);
-  }
 }

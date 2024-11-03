@@ -91,7 +91,7 @@ router.put('/server/order', authenticateToken as express.RequestHandler, async (
   }
 });
 
-router.get('/profile-picture/:userId', authenticateToken as express.RequestHandler, async (req, res) => {
+router.get('/profile-picture/:userId', async (req, res) => {
   try {
     await getUserProfilePicture(req, res);
   } catch (error) {

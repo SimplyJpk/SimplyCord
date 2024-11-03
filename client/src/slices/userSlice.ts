@@ -10,6 +10,7 @@ interface UserState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
   onlineUsers: string[];
+  profilePictures: { [userId: number]: string };
 }
 
 const initialState: UserState = {
@@ -17,6 +18,7 @@ const initialState: UserState = {
   status: 'idle',
   error: null,
   onlineUsers: [],
+  profilePictures: {},
 };
 
 export const fetchMe = createAsyncThunk('user/me', async () => {
@@ -28,6 +30,20 @@ export const updateServerOrder = createAsyncThunk('user/updateServerOrder', asyn
   const response = await axiosInstance.put('/user/server/order', serverUsers);
   return response.data;
 });
+
+export const fetchUserProfilePicture = createAsyncThunk(
+  'user/fetchUserProfilePicture',
+  async (userId: number) => {
+    const response = await axiosInstance.get(`/user/profile-picture/${userId}`, {
+      responseType: 'blob'
+    });
+
+    if (response.status === 200) {
+      return URL.createObjectURL(response.data);
+    }
+    return null;
+  }
+);
 
 const userSlice = createSlice({
   name: 'user',
@@ -59,6 +75,23 @@ const userSlice = createSlice({
       .addCase(updateServerOrder.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to update server order';
+      })
+      .addCase(fetchUserProfilePicture.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchUserProfilePicture.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        if (action.payload && action.meta.arg) {
+          state.profilePictures[action.meta.arg] = action.payload;
+        }
+      })
+      .addCase(fetchUserProfilePicture.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Failed to fetch user profile picture';
+        // Remove the picture from the state if exists (Shouldn't?)
+        if (state.profilePictures) {
+          delete state.profilePictures[action.meta.arg];
+        }
       });
   },
 });
@@ -69,5 +102,6 @@ export default userSlice.reducer;
 
 export const selectUser = (state) => state.user.user;
 export const selectUserServers = (state) => state.user.user?.serverUsers ?? [];
+export const selectUserProfilePicture = (state, userId) => state.user.profilePictures[userId];
 
 export type { UserState };

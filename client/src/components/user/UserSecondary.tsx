@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { UserAttributes } from '@shared/models/user';
 // MUI
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 // MUI Components
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 // Resources
-import DefaultAvatar from '../../assets/icons/profile.png';
+import { AppDispatch } from '../../store/store';
+import ProfilePicture from './ProfilePicture';
 
 // TODO: (James) Virtualize this component so it won't lag when there are a lot of users
 
@@ -32,11 +33,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 32,
     height: 32,
     cursor: 'pointer',
-    boxShadow: theme.shadows[1],
     transition: 'all 0.5s',
     '&:hover': {
       boxShadow: theme.shadows[6],
     },
+    borderRadius: '50%',
   },
   username: {
     color: 'white',
@@ -52,20 +53,14 @@ export default function UserSecondary({
 }: {
   user: UserAttributes,
 }) {
+  const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
-
-  useEffect(() => {
-    if (user.userProfilePicture) {
-      fetchUserProfilePicture(user.userProfilePicture.id);
-    }
-  }, [user.userProfilePicture]);
 
   return (
     <Box className={classes.root}>
-      <img
-        id={`profile-picture-${user.id}`}
-        alt="user-avatar"
-        className={classes.avatar}
+      <ProfilePicture
+        userId={user?.id}
+        isOnline={user?.isOnline}
       />
       <Box className={classes.container}>
         <Typography
@@ -82,19 +77,4 @@ export default function UserSecondary({
       </Box>
     </Box>
   );
-}
-
-async function fetchUserProfilePicture(userId) {
-  try {
-    const response = await fetch(`/api/profile-picture/${userId}`);
-    if (response.ok) {
-      const blob = await response.blob();
-      const imageUrl = URL.createObjectURL(blob);
-      document.getElementById(`profile-picture-${userId}`).getElementsByTagName('img')[0].src = imageUrl;
-    } else {
-      console.error('Failed to fetch profile picture:', response.statusText);
-    }
-  } catch (error) {
-    console.error('Error fetching profile picture:', error);
-  }
 }

@@ -147,7 +147,11 @@ export default function ServerList({ onServerSelect }) {
           className={classes.exploreButton}
           onClick={() => navigate('/explore')}
         >
-          {/* ... */}
+          <Avatar
+            src={PlusCircle}
+            alt="plus-circle"
+            className={classes.avatar}
+          />
         </Box>
       </Box>
     </Box>
