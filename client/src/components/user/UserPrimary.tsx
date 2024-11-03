@@ -74,6 +74,7 @@ export default function UserPrimary({
         <ProfilePicture
           userId={user?.id}
           isOnline={true}
+          showOnlineStatus={true}
         />
         <Box className={classes.userInfo}>
           <Typography className={classes.username}>{user?.username}</Typography>

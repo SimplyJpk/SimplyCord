@@ -48,9 +48,11 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const ProfilePicture = ({
   userId,
   isOnline = false,
+  showOnlineStatus = false,
 }: {
   userId: number,
   isOnline?: boolean,
+  showOnlineStatus?: boolean,
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
@@ -77,6 +79,7 @@ const ProfilePicture = ({
             // TODO: (James) Make a theme variable for online/offline color
             backgroundColor: isOnline ? '#44b700' : '#ff0000',
             color: isOnline ? '#44b700' : '#ff0000',
+            opacity: showOnlineStatus ? 1 : 0,
           },
         }}
       >

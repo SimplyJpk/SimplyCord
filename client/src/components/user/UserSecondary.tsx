@@ -61,6 +61,7 @@ export default function UserSecondary({
       <ProfilePicture
         userId={user?.id}
         isOnline={user?.isOnline}
+        showOnlineStatus={true}
       />
       <Box className={classes.container}>
         <Typography

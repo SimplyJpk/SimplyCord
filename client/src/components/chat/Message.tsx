@@ -8,6 +8,7 @@ import { MessageAttributes } from '@shared/models/message';
 import { getMessageDate } from '../../util/dateUtil';
 // Resources
 import DefaultAvatar from '../../assets/icons/profile.png';
+import ProfilePicture from '@components/user/ProfilePicture';
 
 export function Message({ message }: { message: MessageAttributes }) {
   return (
@@ -23,10 +24,8 @@ export function Message({ message }: { message: MessageAttributes }) {
         py: 1,
       }}
     >
-      <Avatar
-        src={message.user?.avatar ?? DefaultAvatar}
-        alt="avatar"
-        sx={{ width: 40, height: 40 }}
+      <ProfilePicture
+        userId={message.user?.id}
       />
       <Box
         sx={{
