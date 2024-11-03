@@ -18,6 +18,17 @@ import serverRoutes from '@routes/serverRoutes';
 // Controllers
 // TODO: (James) Prob don't need to import these
 
+// Check if UPLOADS_PATH, TEMP_UPLOADS_PATH and PROFILE_PICTURES_PATH exists and create them if not
+if (!fs.existsSync(process.env.UPLOADS_PATH!)) {
+  fs.mkdirSync(process.env.UPLOADS_PATH!);
+}
+if (!fs.existsSync(process.env.TEMP_UPLOADS_PATH!)) {
+  fs.mkdirSync(process.env.TEMP_UPLOADS_PATH!);
+}
+if (!fs.existsSync(process.env.PROFILE_PICTURES_PATH!)) {
+  fs.mkdirSync(process.env.PROFILE_PICTURES_PATH!);
+}
+
 // Models
 import models from './orm/models';
 const { User, Message, Server, ServerChannel } = models;
