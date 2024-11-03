@@ -31,7 +31,8 @@
     "baseUrl": "./src",
     "typeRoots": [
       "./node_modules/@types",
-      "./src/types"
+      "./src/types",
+      "./node_modules/yup"
     ]
   },
   "include": [
