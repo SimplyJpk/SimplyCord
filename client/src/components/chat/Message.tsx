@@ -8,7 +8,7 @@ import { MessageAttributes } from '@shared/models/message';
 import { getMessageDate } from '../../util/dateUtil';
 // Resources
 import DefaultAvatar from '../../assets/icons/profile.png';
-import ProfilePicture from '@components/user/ProfilePicture';
+import ProfilePicture from '../../components/user/ProfilePicture';
 
 export function Message({ message }: { message: MessageAttributes }) {
   return (
