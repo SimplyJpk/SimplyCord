@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     transition: 'width 0.5s',
     display: 'flex',
     flexDirection: 'column',
+    overflowX: 'hidden',
   },
   header: {
     display: 'flex',

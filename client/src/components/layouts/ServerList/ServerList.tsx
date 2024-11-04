@@ -12,12 +12,16 @@ import Avatar from '@mui/material/Avatar';
 // Slice
 import { selectUserServers, updateServerOrder } from '../../../slices/userSlice';
 // Resources
-import DefaultAvatar from '../../../assets/icons/profile.png';
 import PlusCircle from '../../../assets/icons/ui/iconmonstr-plus-circle-lined-240.png';
 // Components
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import {
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
 import { CSS } from '@dnd-kit/utilities';
+// Components
+import ServerPicture from './ServerPicture';
 
 const useStyles = makeStyles((theme: Theme) => ({
   serverListContainer: {
@@ -36,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     gap: '0.5rem',
     overflowY: 'auto',
+    overflowX: 'hidden',
     height: '100%',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
@@ -72,6 +77,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     position: 'relative',
     overflow: 'hidden',
+    width: '3.5rem',
+    height: '3.5rem',
   },
   avatar: {
     width: '3.5rem',
@@ -133,6 +140,7 @@ export default function ServerList({ onServerSelect }) {
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
+          modifiers={[restrictToVerticalAxis]}
         >
           <SortableContext
             items={items}
@@ -190,10 +198,8 @@ function SortableItem({ server, onServerSelect }) {
       onClick={() => onServerSelect(server)}
       className={classes.serverItem}
     >
-      <Avatar
-        src={server.server?.iconUrl || DefaultAvatar}
-        alt="avatar"
-        className={classes.avatar}
+      <ServerPicture
+        serverId={server.id}
       />
       <Typography
         sx={{
