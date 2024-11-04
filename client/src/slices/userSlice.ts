@@ -4,6 +4,9 @@ import axiosInstance from '../network/axios';
 import { UserAttributes } from '@shared/models/user';
 import { ServerUsersAttributes } from '@shared/models/serverUsers';
 
+// Resources
+import DefaultAvatar from '../assets/icons/profile.png';
+
 // Multi-purpose slice, auth is for validation, but there is a user user/me route that is used to get self info, and another user/get/:id route to get a user by id
 interface UserState {
   user: UserAttributes | null;
@@ -40,8 +43,9 @@ export const fetchUserProfilePicture = createAsyncThunk(
 
     if (response.status === 200) {
       return URL.createObjectURL(response.data);
+    } else {
+      return DefaultAvatar;
     }
-    return null;
   }
 );
 
@@ -87,11 +91,8 @@ const userSlice = createSlice({
       })
       .addCase(fetchUserProfilePicture.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message || 'Failed to fetch user profile picture';
-        // Remove the picture from the state if exists (Shouldn't?)
-        if (state.profilePictures) {
-          delete state.profilePictures[action.meta.arg];
-        }
+        // set the profile picture to DefaultAvatar
+        state.profilePictures[action.meta.arg] = DefaultAvatar;
       });
   },
 });

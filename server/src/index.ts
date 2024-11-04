@@ -29,6 +29,10 @@ if (!fs.existsSync(process.env.PROFILE_PICTURES_PATH!)) {
   fs.mkdirSync(process.env.PROFILE_PICTURES_PATH!);
 }
 
+if (!fs.existsSync(process.env.SERVER_DATA_PATH!)) {
+  fs.mkdirSync(process.env.SERVER_DATA_PATH!);
+}
+
 // Models
 import models from './orm/models';
 const { User, Message, Server, ServerChannel } = models;

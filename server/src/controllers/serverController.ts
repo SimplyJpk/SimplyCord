@@ -129,3 +129,54 @@ export async function getServerMessages(req: Request, res: Response) {
     res.status(500).json({ error: (error as Error).message });
   }
 }
+
+export async function getServerIcon(req: Request, res: Response) {
+  try {
+    const { serverId } = req.params;
+    const server = await Server.findOne({ where: { id: serverId } });
+    if (server) {
+      // Return the file
+      const filePath = process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.iconUrl;
+
+      // Log the file path to debug
+      console.log('Attempting to send file:', filePath);
+
+      // Use path.resolve to get absolute path if needed
+      // Remove the root option unless you're absolutely sure about the path
+      res.sendFile(filePath,
+        { root: './' }
+      );
+    } else {
+      res.status(404).json({ error: 'Server not found' });
+    }
+  } catch (error) {
+    console.error('Error in getServerIcon:', error);
+    res.status(500).json({ error: (error as Error).message });
+  }
+}
+
+export async function getServerBanner(req: Request, res: Response) {
+  try {
+    const { serverId } = req.params;
+    const server = await Server.findOne({ where: { id: serverId } });
+    if (server) {
+      // Return the file
+      const filePath = process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.bannerUrl;
+
+      // Log the file path to debug
+      console.log('Attempting to send file:', filePath);
+
+      // Use path.resolve to get absolute path if needed
+      // Remove the root option unless you're absolutely sure about the path
+      res.sendFile(filePath,
+        { root: './' }
+      );
+    } else {
+      res.status(404).json({ error: 'Server not found' });
+    }
+  }
+  catch (error) {
+    console.error('Error in getServerBanner:', error);
+    res.status(500).json({ error: (error as Error).message });
+  }
+}

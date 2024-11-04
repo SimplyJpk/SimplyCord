@@ -12,6 +12,8 @@ import {
   getServerUsers,
   joinServer,
   getServerMessages,
+  getServerIcon,
+  getServerBanner,
 } from '@controllers/serverController';
 
 const router = express.Router();
@@ -70,6 +72,26 @@ router.get('/:serverId/users', authenticateToken as express.RequestHandler, asyn
 router.post('/:serverId/join', authenticateToken as express.RequestHandler, async (req, res) => {
   try {
     await joinServer(req, res);
+  } catch (error) {
+    if (!res.headersSent) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  }
+});
+
+router.get('/icon/:serverId', async (req, res) => {
+  try {
+    await getServerIcon(req, res);
+  } catch (error) {
+    if (!res.headersSent) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  }
+});
+
+router.get('/banner/:serverId', async (req, res) => {
+  try {
+    await getServerBanner(req, res);
   } catch (error) {
     if (!res.headersSent) {
       res.status(500).json({ error: (error as Error).message });

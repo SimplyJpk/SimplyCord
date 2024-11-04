@@ -5,22 +5,11 @@ import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
 // MUI Components
 import Grid from '@mui/material/Grid2';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-// MUI Icons
-import LogoutIcon from '@mui/icons-material/Logout';
-import LoginIcon from '@mui/icons-material/Login';
 // Slices
 import { selectPublicServers, fetchPublicServers, joinServer } from '../../slices/serverSlice';
 import { selectUserServers } from '../../slices/userSlice';
 // Resources
-import DefaultAvatar from '../../assets/icons/profile.png';
-import { isEqual } from 'lodash';
+import ServerCard from '../../components/layouts/ServerList/ServerCard';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -101,50 +90,10 @@ const ServerExplore = () => {
             }}
             key={server.id}
           >
-            <Card
-              className={classes.card}
-              onClick={() => handleJoinServer(server.id)}
-              sx={{
-                width: '300px',
-              }}
-            >
-              <CardMedia
-                className={classes.cardMedia}
-                image={server.bannerUrl || DefaultAvatar}
-                title={`${server.name} banner`}
-              />
-              <CardContent className={classes.cardContent}>
-                <Box className={classes.serverInfo}>
-                  <Avatar
-                    src={server.avatarUrl || DefaultAvatar}
-                    alt={`${server.name} avatar`}
-                    className={classes.avatar}
-                  />
-                  <Box>
-                    <Typography variant="h6" component="h2">
-                      {server.name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {server.description}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box className={classes.memberCount}>
-                  <Typography variant="body2" color="textSecondary" ml={2}>
-                    {server.memberCount ? ` ${server.memberCount} members` : 'No members'}
-                  </Typography>
-                  <IconButton
-                    color="primary"
-                    aria-label="join-server"
-                    onClick={() => handleJoinServer(server.id)}
-                  >
-                    {userServers.find((userServer) => userServer.serverId === server.id) ?
-                      <LogoutIcon /> : <LoginIcon />
-                    }
-                  </IconButton>
-                </Box>
-              </CardContent>
-            </Card>
+            <ServerCard
+              server={server}
+              onJoinServer={handleJoinServer}
+            />
           </Grid>
         ))}
       </Grid>

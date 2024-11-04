@@ -48,11 +48,15 @@ async function initializeDatabase() {
         passwordChanged: new Date(),
         reset: 0,
       });
+      await models.UserProfilePicture.create({
+        userId: user.id,
+        url: 'profile.png',
+      });
       console.log('Created user');
 
       if (process.env.TEST_USER) {
         const testUser = process.env.TEST_USER.replace(/\s/g, '').replace(/'/g, '').split(',');
-        await models.User.create({
+        const improvUser = await models.User.create({
           username: testUser[1],
           gid: testUser[0],
           email: testUser[2],
@@ -62,15 +66,19 @@ async function initializeDatabase() {
           passwordChanged: new Date(),
           reset: 0,
         });
+        await models.UserProfilePicture.create({
+          userId: improvUser.id,
+          url: 'profile.webp',
+        });
         console.log('Created test user');
       }
 
       const server1 = await models.Server.create({
-        name: 'Server 1',
+        name: 'Unity Developer Community',
         gid: 'server1',
-        description: 'This is the first server',
-        iconUrl: '',
-        bannerUrl: '',
+        description: 'First of its kind',
+        iconUrl: 'profile.png',
+        bannerUrl: 'banner.webp',
       });
       console.log('Created server 1');
 
@@ -78,8 +86,8 @@ async function initializeDatabase() {
         name: 'Server 2',
         gid: 'server2',
         description: 'This is the second server',
-        iconUrl: '',
-        bannerUrl: '',
+        iconUrl: 'profile.png',
+        bannerUrl: 'banner.webp',
       });
       console.log('Created server 2');
 
@@ -87,8 +95,8 @@ async function initializeDatabase() {
         name: 'Server 3',
         gid: 'server3',
         description: 'This is the third server',
-        iconUrl: '',
-        bannerUrl: '',
+        iconUrl: 'profile.png',
+        bannerUrl: 'banner.webp',
       });
 
       console.log('Created server 3');

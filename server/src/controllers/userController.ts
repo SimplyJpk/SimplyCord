@@ -59,9 +59,11 @@ export async function registerUser(req: Request, res: Response, profilePicturePa
       // Delete old file
       await fs.unlink(profilePicturePath);
       console.log('Copied file to profile pictures folder');
+
+      const databasePath = `profile${profilePictureExt}`;
       const userProfilePicture = await UserProfilePicture.create({
         userId: user.id,
-        url: newProfilePicturePath,
+        url: databasePath,
       });
       console.log('Created user profile picture');
     }
@@ -156,11 +158,10 @@ export async function getUserProfilePicture(req: Request, res: Response) {
 
     if (userProfilePicture) {
       // Return the file
-      const filePath = userProfilePicture.url;
+      const filePath = process.env.PROFILE_PICTURES_PATH + '/' + userId + '/' + userProfilePicture.url;
 
       // Log the file path to debug
       console.log('Attempting to send file:', filePath);
-
       // Use path.resolve to get absolute path if needed
       // Remove the root option unless you're absolutely sure about the path
       res.sendFile(filePath,
