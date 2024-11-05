@@ -42,7 +42,7 @@ if (!fs.existsSync(process.env.SERVER_DATA_PATH!)) {
 if (process.env.TEST_DOWNLOAD_MEDIA) {
   const downloadUrl = process.env.TEST_DOWNLOAD_MEDIA;
   const filePath = path.join(__dirname, '../temp.zip');
-  const outputDir = path.join(__dirname, '../');
+  const outputDir = path.join(__dirname, '../dist/');
 
   console.log('TEST_DOWNLOAD_MEDIA:', downloadUrl);
   console.log('TEST_DOWNLOAD_MEDIA_OUTPUT:', outputDir);
@@ -61,6 +61,9 @@ if (process.env.TEST_DOWNLOAD_MEDIA) {
           .pipe(unzipper.Extract({ path: outputDir }))
           .promise();
         console.log('Unzip complete');
+        // print out the files in the output directory
+        const files = await fs.readdirSync(outputDir);
+        console.log('Files in output directory:', files);
       } catch (error) {
         console.error(`Unzip error: ${error}`);
       } finally {
