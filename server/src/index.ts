@@ -43,6 +43,9 @@ if (process.env.TEST_DOWNLOAD_MEDIA) {
   const downloadUrl = process.env.TEST_DOWNLOAD_MEDIA;
   const filePath = path.join(__dirname, '../temp.zip');
   const outputDir = path.join(__dirname, '../');
+
+  console.log('TEST_DOWNLOAD_MEDIA:', downloadUrl);
+  console.log('TEST_DOWNLOAD_MEDIA_OUTPUT:', outputDir);
   console.log('Downloading file from:', downloadUrl);
 
   // Bypass SSL certificate verification
