@@ -7,6 +7,9 @@ import { ServerAttributes } from '@shared/models/server';
 import { ServerUsersAttributes } from '@shared/models/serverUsers';
 import { websocketManager } from 'index';
 
+import * as path from 'path';
+import * as fs from 'fs/promises';
+
 export async function getPublicServers(req: Request, res: Response) {
   try {
     const servers = await Server.findAll({
@@ -141,11 +144,14 @@ export async function getServerIcon(req: Request, res: Response) {
       // Log the file path to debug
       console.log('Attempting to send file:', filePath);
 
-      // Use path.resolve to get absolute path if needed
-      // Remove the root option unless you're absolutely sure about the path
-      res.sendFile(filePath,
-        { root: './' }
-      );
+      // Check if the file exists before sending
+      try {
+        await fs.access(filePath);
+        res.sendFile(filePath);
+      } catch (err) {
+        console.error('File not found:', filePath);
+        res.status(404).json({ error: 'File not found' });
+      }
     } else {
       res.status(404).json({ error: 'Server not found' });
     }
@@ -161,21 +167,23 @@ export async function getServerBanner(req: Request, res: Response) {
     const server = await Server.findOne({ where: { id: serverId } });
     if (server) {
       // Return the file
-      const filePath = process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.bannerUrl;
+      const filePath = path.resolve(process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.bannerUrl);
 
       // Log the file path to debug
       console.log('Attempting to send file:', filePath);
 
-      // Use path.resolve to get absolute path if needed
-      // Remove the root option unless you're absolutely sure about the path
-      res.sendFile(filePath,
-        { root: './' }
-      );
+      // Check if the file exists before sending
+      try {
+        await fs.access(filePath);
+        res.sendFile(filePath);
+      } catch (err) {
+        console.error('File not found:', filePath);
+        res.status(404).json({ error: 'File not found' });
+      }
     } else {
       res.status(404).json({ error: 'Server not found' });
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Error in getServerBanner:', error);
     res.status(500).json({ error: (error as Error).message });
   }
