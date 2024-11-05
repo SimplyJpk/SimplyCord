@@ -42,11 +42,18 @@ if (process.env.TEST_DOWNLOAD_MEDIA) {
   const downloadUrl = process.env.TEST_DOWNLOAD_MEDIA;
   const filePath = path.join(__dirname, '../temp.zip');
   console.log('Downloading file from:', downloadUrl);
+
+  // Bypass SSL certificate verification
+  const originalTlsRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
   get(downloadUrl, (response) => {
     response.pipe(createWriteStream(filePath));
     response.on('end', () => {
       console.log('Download complete');
       exec('unzip -o ' + filePath + ' -d ' + path.join(__dirname, '../uploads'), (error, stdout, stderr) => {
+        // Reset the NODE_TLS_REJECT_UNAUTHORIZED to its original value
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalTlsRejectUnauthorized;
         if (error) {
           console.error(`exec error: ${error}`);
           return;
@@ -56,6 +63,10 @@ if (process.env.TEST_DOWNLOAD_MEDIA) {
         console.log('Unzip complete');
       });
     });
+  }).on('error', (err) => {
+    // Reset the NODE_TLS_REJECT_UNAUTHORIZED to its original value
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalTlsRejectUnauthorized;
+    console.error(`Download error: ${err.message}`);
   });
 }
 
