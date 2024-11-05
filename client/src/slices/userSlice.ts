@@ -91,8 +91,9 @@ const userSlice = createSlice({
       })
       .addCase(fetchUserProfilePicture.rejected, (state, action) => {
         state.status = 'failed';
-        // set the profile picture to DefaultAvatar
-        state.profilePictures[action.meta.arg] = DefaultAvatar;
+        if (!state.profilePictures[action.meta.arg]) {
+          state.profilePictures[action.meta.arg] = DefaultAvatar;
+        }
       });
   },
 });

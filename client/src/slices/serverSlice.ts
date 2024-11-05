@@ -150,7 +150,9 @@ const serversSlice = createSlice({
       })
       .addCase(fetchServerBanner.rejected, (state, action) => {
         state.status = 'failed';
-        state.banners[action.meta.arg] = DefaultAvatar;
+        if (!state.banners[action.meta.arg]) {
+          state.banners[action.meta.arg] = DefaultAvatar;
+        }
         // TODO: (James) Maybe some other error handling, maybe just mark as no server banner?
       });
   },
