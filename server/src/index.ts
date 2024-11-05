@@ -42,7 +42,7 @@ if (!fs.existsSync(process.env.SERVER_DATA_PATH!)) {
 if (process.env.TEST_DOWNLOAD_MEDIA) {
   const downloadUrl = process.env.TEST_DOWNLOAD_MEDIA;
   const filePath = path.join(__dirname, '../temp.zip');
-  const outputDir = path.join(__dirname, '../uploads');
+  const outputDir = path.join(__dirname, '../');
   console.log('Downloading file from:', downloadUrl);
 
   // Bypass SSL certificate verification
