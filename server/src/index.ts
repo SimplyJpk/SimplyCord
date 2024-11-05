@@ -6,10 +6,11 @@ import fs from 'fs';
 import http from 'http';
 import WebSocket from 'ws';
 import WebSocketManager from './websocket/websocketManager';
-import { createWriteStream } from 'fs';
+import { createWriteStream, createReadStream } from 'fs';
 import { get } from 'https';
 import { exec } from 'child_process';
-import path from 'path';
+import * as path from 'path';
+import * as unzipper from 'unzipper';
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -41,6 +42,7 @@ if (!fs.existsSync(process.env.SERVER_DATA_PATH!)) {
 if (process.env.TEST_DOWNLOAD_MEDIA) {
   const downloadUrl = process.env.TEST_DOWNLOAD_MEDIA;
   const filePath = path.join(__dirname, '../temp.zip');
+  const outputDir = path.join(__dirname, '../uploads');
   console.log('Downloading file from:', downloadUrl);
 
   // Bypass SSL certificate verification
@@ -49,19 +51,19 @@ if (process.env.TEST_DOWNLOAD_MEDIA) {
 
   get(downloadUrl, (response) => {
     response.pipe(createWriteStream(filePath));
-    response.on('end', () => {
+    response.on('end', async () => {
       console.log('Download complete');
-      exec('unzip -o ' + filePath + ' -d ' + path.join(__dirname, '../uploads'), (error, stdout, stderr) => {
+      try {
+        await createReadStream(filePath)
+          .pipe(unzipper.Extract({ path: outputDir }))
+          .promise();
+        console.log('Unzip complete');
+      } catch (error) {
+        console.error(`Unzip error: ${error}`);
+      } finally {
         // Reset the NODE_TLS_REJECT_UNAUTHORIZED to its original value
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalTlsRejectUnauthorized;
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return;
-        }
-        console.log(`stdout: ${stdout}`);
-        console.log(`stderr: ${stderr}`);
-        console.log('Unzip complete');
-      });
+      }
     });
   }).on('error', (err) => {
     // Reset the NODE_TLS_REJECT_UNAUTHORIZED to its original value
