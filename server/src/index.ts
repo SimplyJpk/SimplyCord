@@ -6,6 +6,10 @@ import fs from 'fs';
 import http from 'http';
 import WebSocket from 'ws';
 import WebSocketManager from './websocket/websocketManager';
+import { createWriteStream } from 'fs';
+import { get } from 'https';
+import { exec } from 'child_process';
+import path from 'path';
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -32,6 +36,29 @@ if (!fs.existsSync(process.env.PROFILE_PICTURES_PATH!)) {
 if (!fs.existsSync(process.env.SERVER_DATA_PATH!)) {
   fs.mkdirSync(process.env.SERVER_DATA_PATH!);
 }
+
+// Download Test Media process.env.TEST_DOWNLOAD_MEDIA
+if (process.env.TEST_DOWNLOAD_MEDIA) {
+  const downloadUrl = process.env.TEST_DOWNLOAD_MEDIA;
+  const filePath = path.join(__dirname, '../temp.zip');
+  console.log('Downloading file from:', downloadUrl);
+  get(downloadUrl, (response) => {
+    response.pipe(createWriteStream(filePath));
+    response.on('end', () => {
+      console.log('Download complete');
+      exec('unzip -o ' + filePath + ' -d ' + path.join(__dirname, '../uploads'), (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+        console.log('Unzip complete');
+      });
+    });
+  });
+}
+
 
 // Models
 import models from './orm/models';
