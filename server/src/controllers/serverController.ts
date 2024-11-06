@@ -139,7 +139,7 @@ export async function getServerIcon(req: Request, res: Response) {
     const server = await Server.findOne({ where: { id: serverId } });
     if (server) {
       // Return the file
-      const filePath = process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.iconUrl;
+      const filePath = path.resolve(process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.iconUrl);
 
       // Log the file path to debug
       console.log('Attempting to send file:', filePath);
