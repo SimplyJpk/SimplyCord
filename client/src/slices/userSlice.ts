@@ -14,6 +14,7 @@ interface UserState {
   error: string | null;
   onlineUsers: string[];
   profilePictures: { [userId: number]: string };
+  profilePictureRequests: { [userId: number]: boolean };
 }
 
 const initialState: UserState = {
@@ -22,6 +23,7 @@ const initialState: UserState = {
   error: null,
   onlineUsers: [],
   profilePictures: {},
+  profilePictureRequests: {},
 };
 
 export const fetchMe = createAsyncThunk('user/me', async () => {
@@ -36,15 +38,22 @@ export const updateServerOrder = createAsyncThunk('user/updateServerOrder', asyn
 
 export const fetchUserProfilePicture = createAsyncThunk(
   'user/fetchUserProfilePicture',
-  async (userId: number) => {
+  async (userId: number, { getState, dispatch }) => {
+    const state = getState() as { user: UserState };
+    if (state.user.profilePictureRequests[userId]) {
+      return; // Request already in progress
+    }
+
+    dispatch(setProfilePictureRequestInProgress({ userId, inProgress: true }));
+
     const response = await axiosInstance.get(`/user/profile-picture/${userId}`, {
       responseType: 'blob'
     });
 
     if (response.status === 200) {
-      return URL.createObjectURL(response.data);
+      return { userId, url: URL.createObjectURL(response.data) };
     } else {
-      return DefaultAvatar;
+      return { userId, url: DefaultAvatar };
     }
   }
 );
@@ -55,6 +64,9 @@ const userSlice = createSlice({
   reducers: {
     setOnlineUsers: (state, action) => {
       state.onlineUsers = action.payload;
+    },
+    setProfilePictureRequestInProgress: (state, action) => {
+      state.profilePictureRequests[action.payload.userId] = action.payload.inProgress;
     },
   },
   extraReducers: (builder) => {
@@ -80,25 +92,27 @@ const userSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message || 'Failed to update server order';
       })
-      .addCase(fetchUserProfilePicture.pending, (state) => {
+      .addCase(fetchUserProfilePicture.pending, (state, action) => {
         state.status = 'loading';
       })
       .addCase(fetchUserProfilePicture.fulfilled, (state, action) => {
         state.status = 'succeeded';
         if (action.payload && action.meta.arg) {
-          state.profilePictures[action.meta.arg] = action.payload;
+          state.profilePictures[action.meta.arg] = action.payload.url;
         }
+        state.profilePictureRequests[action.meta.arg] = false;
       })
       .addCase(fetchUserProfilePicture.rejected, (state, action) => {
         state.status = 'failed';
         if (!state.profilePictures[action.meta.arg]) {
           state.profilePictures[action.meta.arg] = DefaultAvatar;
         }
+        state.profilePictureRequests[action.meta.arg] = false;
       });
   },
 });
 
-export const { setOnlineUsers } = userSlice.actions;
+export const { setOnlineUsers, setProfilePictureRequestInProgress } = userSlice.actions;
 
 export default userSlice.reducer;
 

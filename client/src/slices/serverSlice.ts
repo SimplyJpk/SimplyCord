@@ -16,6 +16,8 @@ interface ServersState {
   error: string | null;
   icons: { [serverId: number]: string };
   banners: { [serverId: number]: string };
+  iconRequests: { [serverId: number]: boolean };
+  bannerRequests: { [serverId: number]: boolean };
 }
 
 const initialState: ServersState = {
@@ -25,6 +27,8 @@ const initialState: ServersState = {
   error: null,
   icons: {},
   banners: {},
+  iconRequests: {},
+  bannerRequests: {},
 };
 
 export const fetchPublicServers = createAsyncThunk('servers/fetchPublicServers', async () => {
@@ -52,30 +56,44 @@ export const fetchServerMessages = createAsyncThunk('messages/fetchServerMessage
 
 export const fetchServerPicture = createAsyncThunk(
   'servers/fetchServerPicture',
-  async (serverId: number) => {
+  async (serverId: number, { getState, dispatch }) => {
+    const state = getState() as { servers: ServersState };
+    if (state.servers.iconRequests[serverId]) {
+      return; // Request already in progress
+    }
+
+    dispatch(setIconRequestInProgress({ serverId, inProgress: true }));
+
     const response = await axiosInstance.get(`/servers/icon/${serverId}`, {
       responseType: 'blob'
     });
 
     if (response.status === 200) {
-      return URL.createObjectURL(response.data);
+      return { serverId, url: URL.createObjectURL(response.data) };
     } else {
-      return DefaultAvatar;
+      return { serverId, url: DefaultAvatar };
     }
   }
 );
 
 export const fetchServerBanner = createAsyncThunk(
   'servers/fetchServerBanner',
-  async (serverId: number) => {
+  async (serverId: number, { getState, dispatch }) => {
+    const state = getState() as { servers: ServersState };
+    if (state.servers.bannerRequests[serverId]) {
+      return; // Request already in progress
+    }
+
+    dispatch(setBannerRequestInProgress({ serverId, inProgress: true }));
+
     const response = await axiosInstance.get(`/servers/banner/${serverId}`, {
       responseType: 'blob'
     });
 
     if (response.status === 200) {
-      return URL.createObjectURL(response.data);
+      return { serverId, url: URL.createObjectURL(response.data) };
     } else {
-      return DefaultAvatar;
+      return { serverId, url: DefaultAvatar };
     }
   }
 );
@@ -83,7 +101,14 @@ export const fetchServerBanner = createAsyncThunk(
 const serversSlice = createSlice({
   name: 'servers',
   initialState,
-  reducers: {},
+  reducers: {
+    setIconRequestInProgress: (state, action) => {
+      state.iconRequests[action.payload.serverId] = action.payload.inProgress;
+    },
+    setBannerRequestInProgress: (state, action) => {
+      state.bannerRequests[action.payload.serverId] = action.payload.inProgress;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchPublicServers.pending, (state) => {
@@ -129,34 +154,36 @@ const serversSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch server messages';
       })
-      .addCase(fetchServerPicture.pending, (state) => {
+      .addCase(fetchServerPicture.pending, (state, action) => {
         state.status = 'loading';
       })
       .addCase(fetchServerPicture.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.icons[action.meta.arg] = action.payload;
+        state.icons[action.payload.serverId] = action.payload.url;
+        state.iconRequests[action.payload.serverId] = false;
       })
       .addCase(fetchServerPicture.rejected, (state, action) => {
         state.status = 'failed';
         state.icons[action.meta.arg] = DefaultAvatar;
-        // TODO: (James) Maybe some other error handling, maybe just mark as no server picture?
+        state.iconRequests[action.meta.arg] = false;
       })
-      .addCase(fetchServerBanner.pending, (state) => {
+      .addCase(fetchServerBanner.pending, (state, action) => {
         state.status = 'loading';
       })
       .addCase(fetchServerBanner.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.banners[action.meta.arg] = action.payload;
+        state.banners[action.payload.serverId] = action.payload.url;
+        state.bannerRequests[action.payload.serverId] = false;
       })
       .addCase(fetchServerBanner.rejected, (state, action) => {
         state.status = 'failed';
-        if (!state.banners[action.meta.arg]) {
-          state.banners[action.meta.arg] = DefaultAvatar;
-        }
-        // TODO: (James) Maybe some other error handling, maybe just mark as no server banner?
+        state.banners[action.meta.arg] = DefaultAvatar;
+        state.bannerRequests[action.meta.arg] = false;
       });
   },
 });
+
+export const { setIconRequestInProgress, setBannerRequestInProgress } = serversSlice.actions;
 
 export default serversSlice.reducer;
 

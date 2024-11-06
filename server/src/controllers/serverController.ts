@@ -146,7 +146,6 @@ export async function getServerIcon(req: Request, res: Response) {
 
       // Check if the file exists before sending
       try {
-        await fs.access(filePath);
         res.sendFile(filePath);
       } catch (err) {
         console.error('File not found:', filePath);
@@ -174,7 +173,6 @@ export async function getServerBanner(req: Request, res: Response) {
 
       // Check if the file exists before sending
       try {
-        await fs.access(filePath);
         res.sendFile(filePath);
       } catch (err) {
         console.error('File not found:', filePath);
