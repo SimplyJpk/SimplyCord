@@ -138,7 +138,7 @@ export async function getServerIcon(req: Request, res: Response) {
     const { serverId } = req.params;
     const server = await Server.findOne({ where: { id: serverId } });
     if (server) {
-      // Return the file
+      // Construct the full file path
       const filePath = path.resolve(process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.iconUrl);
 
       // Log the file path to debug
@@ -146,6 +146,7 @@ export async function getServerIcon(req: Request, res: Response) {
 
       // Check if the file exists before sending
       try {
+        await fs.access(filePath);
         res.sendFile(filePath);
       } catch (err) {
         console.error('File not found:', filePath);
@@ -165,7 +166,7 @@ export async function getServerBanner(req: Request, res: Response) {
     const { serverId } = req.params;
     const server = await Server.findOne({ where: { id: serverId } });
     if (server) {
-      // Return the file
+      // Construct the full file path
       const filePath = path.resolve(process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.bannerUrl);
 
       // Log the file path to debug
@@ -173,6 +174,7 @@ export async function getServerBanner(req: Request, res: Response) {
 
       // Check if the file exists before sending
       try {
+        await fs.access(filePath);
         res.sendFile(filePath);
       } catch (err) {
         console.error('File not found:', filePath);
