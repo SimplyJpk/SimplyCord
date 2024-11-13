@@ -25,21 +25,21 @@ import serverRoutes from '@routes/serverRoutes';
 
 // Check if UPLOADS_PATH, TEMP_UPLOADS_PATH and PROFILE_PICTURES_PATH exists and create them if not
 if (!fs.existsSync(process.env.UPLOADS_PATH!)) {
-  fs.mkdirSync(process.env.UPLOADS_PATH!);
+  fs.mkdirSync(process.env.UPLOADS_PATH!, { recursive: true });
 }
 if (!fs.existsSync(process.env.TEMP_UPLOADS_PATH!)) {
-  fs.mkdirSync(process.env.TEMP_UPLOADS_PATH!);
+  fs.mkdirSync(process.env.TEMP_UPLOADS_PATH!, { recursive: true });
 }
 if (!fs.existsSync(process.env.PROFILE_PICTURES_PATH!)) {
-  fs.mkdirSync(process.env.PROFILE_PICTURES_PATH!);
+  fs.mkdirSync(process.env.PROFILE_PICTURES_PATH!, { recursive: true });
 }
 
 if (!fs.existsSync(process.env.SERVER_DATA_PATH!)) {
-  fs.mkdirSync(process.env.SERVER_DATA_PATH!);
+  fs.mkdirSync(process.env.SERVER_DATA_PATH!, { recursive: true });
 }
 
 if (!fs.existsSync(process.env.PUBLIC_DIR!)) {
-  fs.mkdirSync(process.env.PUBLIC_DIR!);
+  fs.mkdirSync(process.env.PUBLIC_DIR!, { recursive: true });
 }
 
 // Download Test Media process.env.TEST_DOWNLOAD_MEDIA
