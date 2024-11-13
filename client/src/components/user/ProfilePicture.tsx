@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 // Slices
-import { selectUserProfilePicture } from '../../slices/userSlice';
-import { fetchUserProfilePicture } from '../../slices/userSlice';
+import { getUserById } from '../../slices/serverSlice';
 // MUI
 import { Theme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
@@ -57,13 +56,14 @@ const ProfilePicture = ({
   const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
 
-  const profilePicture = useSelector(state => selectUserProfilePicture(state, userId));
+  const user = useSelector(state => getUserById(state, userId));
 
-  useEffect(() => {
-    if (!profilePicture && userId) {
-      dispatch(fetchUserProfilePicture(userId));
+  const getProfilePicture = useCallback(() => {
+    if (user?.userProfilePicture) {
+      return `${import.meta.env.VITE_APP_DOMAIN_URL}/static/user/${user.id}/${user.userProfilePicture?.url ?? user.userProfilePicture}`;
     }
-  }, [userId, profilePicture]);
+    return DefaultAvatar;
+  }, [user]);
 
   return (
     <Stack direction="row" spacing={2}>
@@ -85,7 +85,7 @@ const ProfilePicture = ({
       >
         <Avatar
           id={`profile-picture-${userId}`}
-          src={profilePicture || DefaultAvatar}
+          src={getProfilePicture()}
           alt="user-avatar"
           className={classes.avatar}
         />

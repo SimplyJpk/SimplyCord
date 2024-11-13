@@ -4,7 +4,6 @@ import {
   registerUser,
   loginUser,
   getUser,
-  getUserProfilePicture
 } from '@controllers/userController';
 import { User, ServerUsers, UserProfilePicture } from '@orm/models';
 import { UserAttributes } from '@shared/models/user';
@@ -84,16 +83,6 @@ router.put('/server/order', authenticateToken as express.RequestHandler, async (
     if (!res.headersSent) {
       res.json({ success: true });
     }
-  } catch (error) {
-    if (!res.headersSent) {
-      res.status(500).json({ error: (error as Error).message });
-    }
-  }
-});
-
-router.get('/profile-picture/:userId', async (req, res) => {
-  try {
-    await getUserProfilePicture(req, res);
   } catch (error) {
     if (!res.headersSent) {
       res.status(500).json({ error: (error as Error).message });

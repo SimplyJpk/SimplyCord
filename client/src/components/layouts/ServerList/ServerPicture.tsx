@@ -1,12 +1,9 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../store/store';
 // Slices
 import {
-  selectServerPicture,
-  fetchServerPicture,
-  selectServerBanner,
-  fetchServerBanner,
+  getServerByID
 } from '../../../slices/serverSlice';
 // MUI
 import { Theme } from '@mui/material/styles';
@@ -40,22 +37,26 @@ const ServerPicture = ({
   const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
 
-  const serverPicture = useSelector(state => selectServerPicture(state, serverId));
-  const serverBanner = useSelector(state => selectServerBanner(state, serverId));
+  const server = useSelector(state => getServerByID(state, serverId));
 
-  useEffect(() => {
-    if (!isBanner && !serverPicture && serverId) {
-      dispatch(fetchServerPicture(serverId));
-    } else if (isBanner && !serverBanner && serverId) {
-      dispatch(fetchServerBanner(serverId));
+
+  const getPicture = useCallback(() => {
+    if (server) {
+      const prefix = `${import.meta.env.VITE_APP_DOMAIN_URL}/static/server/${server.id}/`;
+      if (isBanner && server.bannerUrl) {
+        return `${prefix}${server.bannerUrl}`;
+      } else if (!isBanner && server.iconUrl) {
+        return `${prefix}${server.iconUrl}`;
+      }
     }
-  }, [serverId, serverPicture]);
+    return DefaultAvatar;
+  }, [isBanner, server]);
 
   return (
     <Stack direction="row" spacing={2}>
       <Avatar
         id={`server-picture-${serverId}`}
-        src={serverPicture || DefaultAvatar}
+        src={getPicture()}
         alt="server-avatar"
         className={classes.avatar}
       />

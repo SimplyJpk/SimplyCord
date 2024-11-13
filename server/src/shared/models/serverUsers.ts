@@ -10,6 +10,9 @@ export interface ServerUsersAttributes {
   user?: {
     id: number;
     username: string;
+    userProfilePicture?: {
+      url?: string;
+    }
   };
   server?: {
     id: number;

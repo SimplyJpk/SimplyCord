@@ -9,15 +9,13 @@ import { fetchMe } from './userSlice';
 // Resources
 import DefaultAvatar from '../assets/icons/profile.png';
 
+import { getStaticOrigin } from './app';
+
 interface ServersState {
   publicServers: ServerAttributes[];
   selectedServersUserList: UserAttributes[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
-  icons: { [serverId: number]: string };
-  banners: { [serverId: number]: string };
-  iconRequests: { [serverId: number]: boolean };
-  bannerRequests: { [serverId: number]: boolean };
 }
 
 const initialState: ServersState = {
@@ -25,10 +23,6 @@ const initialState: ServersState = {
   selectedServersUserList: [],
   status: 'idle',
   error: null,
-  icons: {},
-  banners: {},
-  iconRequests: {},
-  bannerRequests: {},
 };
 
 export const fetchPublicServers = createAsyncThunk('servers/fetchPublicServers', async () => {
@@ -54,60 +48,10 @@ export const fetchServerMessages = createAsyncThunk('messages/fetchServerMessage
   return response.data;
 });
 
-export const fetchServerPicture = createAsyncThunk(
-  'servers/fetchServerPicture',
-  async (serverId: number, { getState, dispatch }) => {
-    const state = getState() as { servers: ServersState };
-    if (state.servers.iconRequests[serverId]) {
-      return; // Request already in progress
-    }
-
-    dispatch(setIconRequestInProgress({ serverId, inProgress: true }));
-
-    const response = await axiosInstance.get(`/servers/icon/${serverId}`, {
-      responseType: 'blob'
-    });
-
-    if (response.status === 200) {
-      return { serverId, url: URL.createObjectURL(response.data) };
-    } else {
-      return { serverId, url: DefaultAvatar };
-    }
-  }
-);
-
-export const fetchServerBanner = createAsyncThunk(
-  'servers/fetchServerBanner',
-  async (serverId: number, { getState, dispatch }) => {
-    const state = getState() as { servers: ServersState };
-    if (state.servers.bannerRequests[serverId]) {
-      return; // Request already in progress
-    }
-
-    dispatch(setBannerRequestInProgress({ serverId, inProgress: true }));
-
-    const response = await axiosInstance.get(`/servers/banner/${serverId}`, {
-      responseType: 'blob'
-    });
-
-    if (response.status === 200) {
-      return { serverId, url: URL.createObjectURL(response.data) };
-    } else {
-      return { serverId, url: DefaultAvatar };
-    }
-  }
-);
-
 const serversSlice = createSlice({
   name: 'servers',
   initialState,
   reducers: {
-    setIconRequestInProgress: (state, action) => {
-      state.iconRequests[action.payload.serverId] = action.payload.inProgress;
-    },
-    setBannerRequestInProgress: (state, action) => {
-      state.bannerRequests[action.payload.serverId] = action.payload.inProgress;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -153,43 +97,15 @@ const serversSlice = createSlice({
       .addCase(fetchServerMessages.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch server messages';
-      })
-      .addCase(fetchServerPicture.pending, (state, action) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchServerPicture.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.icons[action.payload.serverId] = action.payload.url;
-        state.iconRequests[action.payload.serverId] = false;
-      })
-      .addCase(fetchServerPicture.rejected, (state, action) => {
-        state.status = 'failed';
-        state.icons[action.meta.arg] = DefaultAvatar;
-        state.iconRequests[action.meta.arg] = false;
-      })
-      .addCase(fetchServerBanner.pending, (state, action) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchServerBanner.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.banners[action.payload.serverId] = action.payload.url;
-        state.bannerRequests[action.payload.serverId] = false;
-      })
-      .addCase(fetchServerBanner.rejected, (state, action) => {
-        state.status = 'failed';
-        state.banners[action.meta.arg] = DefaultAvatar;
-        state.bannerRequests[action.meta.arg] = false;
       });
   },
 });
-
-export const { setIconRequestInProgress, setBannerRequestInProgress } = serversSlice.actions;
 
 export default serversSlice.reducer;
 
 export const selectPublicServers = (state) => state.servers.publicServers;
 export const selectSelectedServersUserList = (state) => state.servers.selectedServersUserList;
-export const selectServerPicture = (state, serverId) => state.servers.icons[serverId];
-export const selectServerBanner = (state, serverId) => state.servers.banners[serverId];
+export const getUserById = (state, userId: number) => state.servers.selectedServersUserList.find((user) => user.id === userId);
+export const getServerByID = (state, serverId: number) => state.servers.publicServers.find((server) => server.id === serverId);
 
 export type { ServersState };

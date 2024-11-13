@@ -1,7 +1,7 @@
 import { fn, col, literal } from '@sequelize/core';
 // Server Controller
 import { Request, Response } from 'express';
-import { Server, User, ServerUsers, Message } from '@orm/models';
+import { Server, User, ServerUsers, Message, UserProfilePicture } from '@orm/models';
 import { ServerAttributes } from '@shared/models/server';
 
 import { ServerUsersAttributes } from '@shared/models/serverUsers';
@@ -57,6 +57,13 @@ export async function getServerUsers(req: Request, res: Response) {
           model: User,
           as: 'user',
           attributes: ['id', 'username'],
+          include: [
+            {
+              model: UserProfilePicture,
+              as: 'userProfilePicture',
+              attributes: ['url'],
+            }
+          ]
         },
       ],
       attributes: ['id', 'userId', 'joinDate'],
@@ -67,6 +74,7 @@ export async function getServerUsers(req: Request, res: Response) {
         id: user.userId,
         joinDate: user.joinDate,
         username: user.user?.username,
+        userProfilePicture: user.user?.userProfilePicture?.url,
       };
     });
 
@@ -129,62 +137,6 @@ export async function getServerMessages(req: Request, res: Response) {
     });
     res.json(messages);
   } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
-  }
-}
-
-export async function getServerIcon(req: Request, res: Response) {
-  try {
-    const { serverId } = req.params;
-    const server = await Server.findOne({ where: { id: serverId } });
-    if (server) {
-      // Construct the full file path
-      const filePath = path.resolve(process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.iconUrl);
-
-      // Log the file path to debug
-      console.log('Attempting to send file:', filePath);
-
-      // Check if the file exists before sending
-      try {
-        await fs.access(filePath);
-        res.sendFile(filePath);
-      } catch (err) {
-        console.error('File not found:', filePath);
-        res.status(404).json({ error: 'File not found' });
-      }
-    } else {
-      res.status(404).json({ error: 'Server not found' });
-    }
-  } catch (error) {
-    console.error('Error in getServerIcon:', error);
-    res.status(500).json({ error: (error as Error).message });
-  }
-}
-
-export async function getServerBanner(req: Request, res: Response) {
-  try {
-    const { serverId } = req.params;
-    const server = await Server.findOne({ where: { id: serverId } });
-    if (server) {
-      // Construct the full file path
-      const filePath = path.resolve(process.env.SERVER_DATA_PATH + '/' + serverId + '/' + server.bannerUrl);
-
-      // Log the file path to debug
-      console.log('Attempting to send file:', filePath);
-
-      // Check if the file exists before sending
-      try {
-        await fs.access(filePath);
-        res.sendFile(filePath);
-      } catch (err) {
-        console.error('File not found:', filePath);
-        res.status(404).json({ error: 'File not found' });
-      }
-    } else {
-      res.status(404).json({ error: 'Server not found' });
-    }
-  } catch (error) {
-    console.error('Error in getServerBanner:', error);
     res.status(500).json({ error: (error as Error).message });
   }
 }

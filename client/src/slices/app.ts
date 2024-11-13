@@ -35,4 +35,12 @@ export const selectIsBusy = (state) => state.app.isBusy;
 export const selectCurrentServerId = (state) => state.app.currentServerId;
 export const selectCurrentServerChannelId = (state) => state.app.currentServerChannelId;
 
+export const getDomainOrigin = () => {
+  return import.meta.env.VITE_APP_DOMAIN_URL + import.meta.env.VITE_APP_API_PATH;
+}
+
+export const getStaticOrigin = () => {
+  return import.meta.env.VITE_APP_DOMAIN_URL + '/static';
+}
+
 export default appSlice.reducer;

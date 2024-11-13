@@ -149,29 +149,3 @@ export async function getUser(req: Request, res: Response) {
   }
 
 }
-
-export async function getUserProfilePicture(req: Request, res: Response) {
-  const { userId } = req.params;
-
-  try {
-    const userProfilePicture = await UserProfilePicture.findOne({ where: { userId } });
-
-    if (userProfilePicture) {
-      // Return the file
-      const filePath = process.env.PROFILE_PICTURES_PATH + '/' + userId + '/' + userProfilePicture.url;
-
-      // Log the file path to debug
-      console.log('Attempting to send file:', filePath);
-      // Use path.resolve to get absolute path if needed
-      // Remove the root option unless you're absolutely sure about the path
-      res.sendFile(filePath,
-        { root: './' }
-      );
-    } else {
-      res.status(404).json({ error: 'Profile picture not found' });
-    }
-  } catch (error) {
-    console.error('Error in getUserProfilePicture:', error);
-    res.status(500).json({ error: (error as Error).message });
-  }
-}

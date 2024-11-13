@@ -1,13 +1,7 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../store/store';
 // Slices
-import {
-  selectServerPicture,
-  fetchServerPicture,
-  selectServerBanner,
-  fetchServerBanner,
-} from '../../../slices/serverSlice';
 import {
   selectUserServers,
 } from '../../../slices/userSlice';
@@ -87,20 +81,16 @@ const ServerCard = ({
   server: ServerAttributes,
   onJoinServer?: (serverId: number) => void,
 }) => {
-  const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
 
-  const serverPicture = useSelector(state => selectServerPicture(state, server.id));
-  const serverBanner = useSelector(state => selectServerBanner(state, server.id));
   const userServers = useSelector(selectUserServers);
-
-  useEffect(() => {
-    if (!serverPicture && server.id) {
-      dispatch(fetchServerPicture(server.id));
-    } else if (!serverBanner && server.id) {
-      dispatch(fetchServerBanner(server.id));
+  const getPicture = useCallback(() => {
+    const prefix = `${import.meta.env.VITE_APP_DOMAIN_URL}/static/server/${server.id}/`;
+    if (server.bannerUrl) {
+      return `${prefix}${server.bannerUrl}`;
     }
-  }, [server.id, serverPicture]);
+    return DefaultAvatar;
+  }, [server]);
 
   return (
     <Card
@@ -112,7 +102,7 @@ const ServerCard = ({
     >
       <CardMedia
         className={classes.cardMedia}
-        image={serverBanner || DefaultAvatar}
+        image={getPicture()}
         title={`${server.name} banner`}
       />
       <CardContent className={classes.cardContent}>

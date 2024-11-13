@@ -1,5 +1,5 @@
 import './types/express/index.t';
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import fs from 'fs';
@@ -36,6 +36,10 @@ if (!fs.existsSync(process.env.PROFILE_PICTURES_PATH!)) {
 
 if (!fs.existsSync(process.env.SERVER_DATA_PATH!)) {
   fs.mkdirSync(process.env.SERVER_DATA_PATH!);
+}
+
+if (!fs.existsSync(process.env.PUBLIC_DIR!)) {
+  fs.mkdirSync(process.env.PUBLIC_DIR!);
 }
 
 // Download Test Media process.env.TEST_DOWNLOAD_MEDIA
@@ -116,6 +120,21 @@ app.use(`${apiPrefix}/user`, userRoutes);
 
 app.use(`${apiPrefix}/servers`, serverRoutes);
 
+// Define the regex pattern for allowed files
+const allowedFilePattern = /^(icon|profile)\..*$/;
+
+// Middleware to check file name against the regex pattern
+const fileFilterMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const fileName = path.basename(req.path);
+  const allowedFilePattern = /^(icon|profile|banner)\.[a-zA-Z0-9]+$/; // Adjust the pattern to allow icon, profile, and banner files with any extension
+  if (allowedFilePattern.test(fileName)) {
+    next();
+  } else {
+    res.status(403).json({ error: 'Access to this file is forbidden' });
+  }
+};
+
+app.use('/static', fileFilterMiddleware, express.static(path.join(__dirname, '../uploads/public')));
 
 app.get(`${apiPrefix}/messages`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
@@ -168,7 +187,8 @@ app.post(`${apiPrefix}/messages/:serverId`, authenticateToken as express.Request
         createdAt: new Date().toISOString(),
       });
       // TODO: (James) We don't want to destructure the user object, but we do want to return the username, and/or make user aware enough they handle it
-      res.json({ ...messageObj.dataValues, user: { userId: user.id, username: user.username } });
+      console.log('Message created:', user);
+      res.json({ ...messageObj.dataValues, user: { id: user.id, username: user.username } });
     } else {
       res.status(401).json({ error: 'Invalid user' });
     }
