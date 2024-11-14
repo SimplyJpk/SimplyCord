@@ -85,7 +85,7 @@ const ProfilePicture = ({
       >
         <Avatar
           id={`profile-picture-${userId}`}
-          src={getProfilePicture()}
+          srcSet={getProfilePicture()}
           alt="user-avatar"
           className={classes.avatar}
         />

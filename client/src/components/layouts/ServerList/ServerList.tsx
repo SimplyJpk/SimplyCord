@@ -156,7 +156,7 @@ export default function ServerList({ onServerSelect }) {
           onClick={() => navigate('/explore')}
         >
           <Avatar
-            src={PlusCircle}
+            srcSet={PlusCircle}
             alt="plus-circle"
             className={classes.avatar}
           />

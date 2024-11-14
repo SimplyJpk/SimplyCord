@@ -56,9 +56,10 @@ const ServerPicture = ({
     <Stack direction="row" spacing={2}>
       <Avatar
         id={`server-picture-${serverId}`}
-        src={getPicture()}
+        srcSet={getPicture()}
         alt="server-avatar"
         className={classes.avatar}
+
       />
     </Stack>
   )
