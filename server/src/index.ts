@@ -134,7 +134,13 @@ const fileFilterMiddleware = (req: Request, res: Response, next: NextFunction) =
   }
 };
 
-app.use('/static', fileFilterMiddleware, express.static(path.join(__dirname, '../uploads/public')));
+app.use('/static', fileFilterMiddleware, express.static(path.join(__dirname, '../uploads/public'), {
+  maxAge: '1d',
+  setHeaders: (res, path, stat) => {
+    res.set('Cache-Control', 'public, max-age=86400');
+    res.set('Content-Type', 'application/octet-stream');
+  }
+}));
 
 app.get(`${apiPrefix}/messages`, authenticateToken as express.RequestHandler, async (req, res) => {
   try {
